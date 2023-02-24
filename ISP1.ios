@@ -1,0 +1,164 @@
+Current configuration : 2153 bytes
+!
+! Last configuration change at 21:53:58 MST Thu Feb 23 2023
+!
+version 15.7
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname ISP1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 32768
+no logging console
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+clock timezone MST -7 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip vrf management
+!
+!
+!
+!
+ip domain lookup source-interface Ethernet0/0
+ip domain name pnjnet.local
+ip name-server 192.168.1.1
+ip name-server 208.67.222.222
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ log config
+  logging enable
+  logging size 200
+  notify syslog contenttype plaintext
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+!
+redundancy
+!
+lldp run
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 192.0.2.1 255.255.255.255
+!
+interface Ethernet0/0
+ ip address 192.168.10.32 255.255.255.0
+ duplex auto
+!
+interface Ethernet0/1
+ description fw1 eth1/1
+ ip address 100.64.0.1 255.255.255.252
+ duplex auto
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet0/3
+ ip vrf forwarding management
+ ip address 172.31.255.2 255.255.255.0
+ duplex auto
+!
+router bgp 65001
+ bgp log-neighbor-changes
+ network 0.0.0.0
+ neighbor 100.64.0.2 remote-as 65011
+ neighbor 100.64.0.2 soft-reconfiguration inbound
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 192.168.10.1
+ip ssh version 2
+!
+ipv6 ioam timestamp
+!
+snmp-server community company.read RO
+snmp-server ifindex persist
+snmp-server location Corp
+snmp-server chassis-id ISP1
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 60 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ login local
+ transport preferred none
+ transport input telnet ssh
+!
+ntp server time1.google.com
+ntp server time3.google.com
+ntp server time2.google.com
+ntp server time4.google.com
+!
+end

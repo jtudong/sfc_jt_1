@@ -117,37 +117,12 @@
                   <enable>yes</enable>
                   <profile>LLDP-profile-1</profile>
                 </lldp>
-                <units>
-                  <entry name="ethernet1/2.100">
-                    <ipv6>
-                      <neighbor-discovery>
-                        <router-advertisement>
-                          <enable>no</enable>
-                        </router-advertisement>
-                      </neighbor-discovery>
-                    </ipv6>
-                    <sdwan-link-settings>
-                      <upstream-nat>
-                        <enable>no</enable>
-                      </upstream-nat>
-                      <enable>no</enable>
-                    </sdwan-link-settings>
-                    <ndp-proxy>
-                      <enabled>no</enabled>
-                    </ndp-proxy>
-                    <adjust-tcp-mss>
-                      <enable>no</enable>
-                    </adjust-tcp-mss>
-                    <ip>
-                      <entry name="10.0.0.1/28"/>
-                    </ip>
-                    <interface-management-profile>https-ssh-ping</interface-management-profile>
-                    <tag>100</tag>
-                    <comment>vlan 100</comment>
-                  </entry>
-                </units>
+                <ip>
+                  <entry name="10.0.0.14/28"/>
+                </ip>
+                <interface-management-profile>https-ssh-ping</interface-management-profile>
               </layer3>
-              <comment>link to IAS1 eth1/0</comment>
+              <comment>link to IAS1 eth0/0</comment>
             </entry>
           </ethernet>
         </interface>
@@ -422,7 +397,6 @@
             <interface>
               <member>ethernet1/1</member>
               <member>ethernet1/2</member>
-              <member>ethernet1/2.100</member>
             </interface>
             <ecmp>
               <algorithm>
@@ -431,6 +405,9 @@
             </ecmp>
           </entry>
         </virtual-router>
+        <lldp>
+          <enable>yes</enable>
+        </lldp>
       </network>
       <deviceconfig>
         <system>
@@ -512,6 +489,12 @@
               <location>lab2</location>
             </snmp-system>
           </snmp-setting>
+          <device-telemetry>
+            <device-health-performance>no</device-health-performance>
+            <product-usage>no</product-usage>
+            <threat-prevention>no</threat-prevention>
+            <region>Americas</region>
+          </device-telemetry>
         </system>
         <setting>
           <config>
@@ -532,7 +515,6 @@
               <network>
                 <layer3>
                   <member>ethernet1/2</member>
-                  <member>ethernet1/2.100</member>
                 </layer3>
               </network>
             </entry>
@@ -680,7 +662,6 @@
               <interface>
                 <member>ethernet1/1</member>
                 <member>ethernet1/2</member>
-                <member>ethernet1/2.100</member>
               </interface>
             </network>
           </import>

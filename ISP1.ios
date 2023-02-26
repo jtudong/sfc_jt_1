@@ -1,6 +1,7 @@
-Current configuration : 2153 bytes
+Current configuration : 2245 bytes
 !
-! Last configuration change at 21:53:58 MST Thu Feb 23 2023
+! No configuration change since last restart
+>>>>>>> dev
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone
@@ -147,14 +148,19 @@ control-plane
 !
 !
 line con 0
- exec-timeout 60 0
+ session-timeout 30
+ exec-timeout 15 0
+ privilege level 15
  logging synchronous
  login local
 line aux 0
 line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
  login local
  transport preferred none
  transport input telnet ssh
+ escape-character BREAK
 !
 ntp server time1.google.com
 ntp server time3.google.com

@@ -1,0 +1,106 @@
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+service compress-config
+!
+hostname IAS1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 32768
+no logging console
+enable password cisco
+!
+clock timezone mst -7 0
+!
+!
+!
+!
+!
+vtp mode off
+!
+ip vrf management
+!
+!
+ip domain-name company.pri
+ip name-server 192.168.10.1
+ip name-server 208.67.200.200
+ip name-server 4.2.2.2
+no ip cef
+no ipv6 cef
+login on-failure log
+login on-success log
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+lldp run
+!
+vlan 100
+ name internet
+!
+!
+snmp-server community company.read RO
+snmp-server ifindex persist
+snmp-server location Corp
+snmp-server chassis-id IAS1
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip default-gateway 10.1.4.1
+ip forward-protocol nd
+!
+no ip http server
+!
+ip ssh version 2
+!
+!
+!
+!
+snmp ifmib ifindex persist
+!
+!
+!
+line con 0
+ session-timeout 30 
+ exec-timeout 15 0
+ privilege level 15
+ logging synchronous
+ login local
+ transport preferred none
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+ escape-character BREAK
+!
+ntp server time1.google.com
+ntp server time3.google.com
+ntp server time4.google.com
+ntp server time2.google.com
+!
+!
+end

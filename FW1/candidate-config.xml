@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <config version="10.1.0" urldb="paloaltonetworks" detail-version="10.1.9">
   <mgt-config>
     <users>
@@ -72,7 +71,13 @@
         <scheduled>yes</scheduled>
       </report>
     </botnet>
-    <content-preview/>
+    <content-preview>
+      <application/>
+      <application-type>
+        <category/>
+        <technology/>
+      </application-type>
+    </content-preview>
   </shared>
   <devices>
     <entry name="localhost.localdomain">

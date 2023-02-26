@@ -1,7 +1,6 @@
-Current configuration : 2228 bytes
+Current configuration : 2245 bytes
 !
-! Last configuration change at 22:01:27 MST Sat Feb 25 2023 by lab
-! NVRAM config last updated at 22:01:29 MST Sat Feb 25 2023 by lab
+! No configuration change since last restart
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone
@@ -148,14 +147,19 @@ control-plane
 !
 !
 line con 0
- exec-timeout 60 0
+ session-timeout 30
+ exec-timeout 15 0
+ privilege level 15
  logging synchronous
  login local
 line aux 0
 line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
  login local
  transport preferred none
  transport input telnet ssh
+ escape-character BREAK
 !
 ntp server time1.google.com
 ntp server time3.google.com

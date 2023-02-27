@@ -1,6 +1,7 @@
-Current configuration : 2245 bytes
+Current configuration : 2518 bytes
 !
-! No configuration change since last restart
+! Last configuration change at 19:57:46 MST Sun Feb 26 2023 by lab
+! NVRAM config last updated at 19:58:35 MST Sun Feb 26 2023 by lab
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone
@@ -98,11 +99,15 @@ interface Loopback0
 !
 interface Ethernet0/0
  ip address 192.168.10.32 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
  duplex auto
 !
 interface Ethernet0/1
  description fw1 eth1/1
  ip address 100.64.0.1 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
  duplex auto
 !
 interface Ethernet0/2
@@ -126,6 +131,7 @@ ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
+ip nat inside source list 1 interface Ethernet0/0 overload
 ip route 0.0.0.0 0.0.0.0 192.168.10.1
 ip ssh version 2
 !
@@ -136,6 +142,7 @@ snmp-server ifindex persist
 snmp-server location Corp
 snmp-server chassis-id ISP1
 !
+access-list 1 permit 100.64.0.0 0.0.0.255
 !
 control-plane
 !

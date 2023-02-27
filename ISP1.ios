@@ -1,7 +1,6 @@
-Current configuration : 2518 bytes
+Current configuration : 2478 bytes
 !
-! Last configuration change at 19:57:46 MST Sun Feb 26 2023 by lab
-! NVRAM config last updated at 19:58:35 MST Sun Feb 26 2023 by lab
+! Last configuration change at 21:43:07 MST Sun Feb 26 2023 by lab
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone
@@ -52,8 +51,9 @@ ip vrf management
 !
 ip domain lookup source-interface Ethernet0/0
 ip domain name pnjnet.local
-ip name-server 192.168.1.1
+ip name-server 192.168.10.1
 ip name-server 208.67.222.222
+ip name-server 192.168.1.1
 ip cef
 login on-failure log
 login on-success log
@@ -174,3 +174,4 @@ ntp server time2.google.com
 ntp server time4.google.com
 !
 end
+

@@ -1,6 +1,6 @@
-Current configuration : 2151 bytes
+Current configuration : 2208 bytes
 !
-! Last configuration change at 18:26:08 mst Sun Feb 26 2023 by lab
+! Last configuration change at 22:05:14 mst Sun Feb 26 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -97,6 +97,9 @@ interface Ethernet1/3
  no switchport
  ip vrf forwarding management
  ip address 172.31.255.6 255.255.255.0
+!
+interface Vlan100
+ ip address 10.0.0.4 255.255.255.240
 !
 ip default-gateway 10.0.0.1
 ip forward-protocol nd

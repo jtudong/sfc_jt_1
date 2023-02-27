@@ -1,6 +1,6 @@
-Current configuration : 2151 bytes
+Current configuration : 2490 bytes
 !
-! Last configuration change at 18:26:08 mst Sun Feb 26 2023 by lab
+! Last configuration change at 19:38:59 mst Sun Feb 26 2023
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -8,14 +8,13 @@ service timestamps log datetime msec localtime show-timezone
 no service password-encryption
 service compress-config
 !
-hostname IAS1
+hostname IDS1
 !
 boot-start-marker
 boot-end-marker
 !
 !
 logging buffered 32768
-no logging console
 enable password cisco
 !
 username lab privilege 15 password 0 lab
@@ -42,17 +41,14 @@ login on-success log
 no ipv6 cef
 !
 !
-archive
- log config
-  logging enable
 !
 spanning-tree mode pvst
 spanning-tree extend system-id
+spanning-tree vlan 100 priority 24576
 !
 !
 vlan 100
  name internet
-lldp run
 !
 !
 !
@@ -68,24 +64,26 @@ lldp run
 !
 !
 interface Ethernet0/0
- description FW1 eth1/2
- switchport access vlan 100
- switchport mode access
- spanning-tree portfast edge
+ description IAS1 e0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
 !
 interface Ethernet0/1
+ description IAS2 e0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
  shutdown
 !
 interface Ethernet0/2
- description IDS1 e0/0
- switchport trunk encapsulation dot1q
- switchport mode trunk
+ shutdown
 !
 interface Ethernet0/3
  shutdown
 !
 interface Ethernet1/0
- shutdown
+ description IDS2 e1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
 !
 interface Ethernet1/1
  shutdown
@@ -96,9 +94,23 @@ interface Ethernet1/2
 interface Ethernet1/3
  no switchport
  ip vrf forwarding management
- ip address 172.31.255.6 255.255.255.0
+ ip address 172.31.255.8 255.255.255.0
 !
-ip default-gateway 10.0.0.1
+interface Vlan100
+ description Internet
+ ip address 10.0.0.2 255.255.255.240
+ ip ospf 1 area 0.0.0.0
+ glbp 100 ip 10.0.0.1
+ glbp 100 priority 110
+ glbp 100 preempt delay minimum 120
+ glbp 100 forwarder preempt delay minimum 120
+!
+router ospf 1
+ router-id 192.0.2.8
+ priority 100
+ passive-interface default
+ no passive-interface Vlan100
+!
 ip forward-protocol nd
 !
 no ip http server
@@ -113,7 +125,7 @@ ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 snmp-server community company.read RO
 snmp-server location Corp
-snmp-server chassis-id IAS1
+snmp-server chassis-id IDS1
 snmp ifmib ifindex persist
 !
 control-plane

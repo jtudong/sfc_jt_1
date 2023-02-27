@@ -72,7 +72,6 @@
         <scheduled>yes</scheduled>
       </report>
     </botnet>
-    <content-preview/>
   </shared>
   <devices>
     <entry name="localhost.localdomain">
@@ -388,11 +387,62 @@
                 <enable>no</enable>
               </rip>
               <ospf>
-                <enable>no</enable>
+                <enable>yes</enable>
+                <area>
+                  <entry name="0.0.0.0">
+                    <type>
+                      <normal/>
+                    </type>
+                    <interface>
+                      <entry name="ethernet1/2">
+                        <bfd>
+                          <profile>Inherit-vr-global-setting</profile>
+                        </bfd>
+                        <enable>yes</enable>
+                        <passive>no</passive>
+                        <gr-delay>10</gr-delay>
+                        <metric>10</metric>
+                        <priority>1</priority>
+                        <hello-interval>10</hello-interval>
+                        <dead-counts>4</dead-counts>
+                        <retransmit-interval>5</retransmit-interval>
+                        <transit-delay>1</transit-delay>
+                        <link-type>
+                          <broadcast/>
+                        </link-type>
+                      </entry>
+                    </interface>
+                  </entry>
+                </area>
+                <router-id>100.64.0.2</router-id>
+                <allow-redist-default-route>yes</allow-redist-default-route>
+                <export-rules>
+                  <entry name="redist-default">
+                    <new-path-type>ext-2</new-path-type>
+                    <metric>100</metric>
+                  </entry>
+                </export-rules>
               </ospf>
               <ospfv3>
                 <enable>no</enable>
               </ospfv3>
+              <redist-profile>
+                <entry name="redist-default">
+                  <filter>
+                    <type>
+                      <member>bgp</member>
+                      <member>static</member>
+                    </type>
+                    <destination>
+                      <member>0.0.0.0/0</member>
+                    </destination>
+                  </filter>
+                  <priority>1</priority>
+                  <action>
+                    <redist/>
+                  </action>
+                </entry>
+              </redist-profile>
             </protocol>
             <interface>
               <member>ethernet1/1</member>
@@ -613,6 +663,82 @@
                   </destination-hip>
                   <action>allow</action>
                   <rule-type>intrazone</rule-type>
+                  <tag>
+                    <member>outside</member>
+                  </tag>
+                </entry>
+                <entry name="permit OSPF" uuid="4eb551dd-3eef-40ce-ad79-2d4ff7e5cc4e">
+                  <to>
+                    <member>inside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>ospf</member>
+                    <member>ospfigp</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
+                  <rule-type>intrazone</rule-type>
+                  <tag>
+                    <member>inside</member>
+                  </tag>
+                </entry>
+                <entry name="permit to Internet" uuid="fc461c0e-8645-46aa-b2c4-15c3f254a449">
+                  <to>
+                    <member>outside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>dns</member>
+                    <member>ping</member>
+                    <member>ssh</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
                   <tag>
                     <member>outside</member>
                   </tag>

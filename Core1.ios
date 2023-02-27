@@ -1,0 +1,140 @@
+Current configuration : 2061 bytes
+!
+! Last configuration change at 11:43:52 mst Mon Feb 27 2023
+!
+version 15.2
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+service compress-config
+!
+hostname Core1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 32768
+enable password cisco
+!
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+no aaa new-model
+clock timezone mst -7 0
+!
+!
+!
+!
+!
+vtp mode off
+!
+ip vrf management
+!
+!
+!
+ip domain-name company.pri
+ip name-server 208.67.200.200
+ip name-server 4.2.2.2
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no switchport
+ ip address 10.0.0.17 255.255.255.252
+ ip ospf 1 area 0.0.0.0
+!
+interface Ethernet0/1
+ shutdown
+!
+interface Ethernet0/2
+ shutdown
+!
+interface Ethernet0/3
+ shutdown
+!
+interface Ethernet1/0
+ shutdown
+!
+interface Ethernet1/1
+ shutdown
+!
+interface Ethernet1/2
+ shutdown
+!
+interface Ethernet1/3
+ shutdown
+!
+router ospf 1
+ router-id 192.0.2.10
+ passive-interface default
+ no passive-interface Ethernet0/0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+snmp-server community company.read RO
+snmp-server location Corp
+snmp-server chassis-id IDS1
+snmp ifmib ifindex persist
+!
+control-plane
+!
+!
+line con 0
+ session-timeout 30
+ exec-timeout 15 0
+ privilege level 15
+ logging synchronous
+ login local
+ transport preferred none
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+ escape-character BREAK
+!
+ntp server time1.google.com
+ntp server time3.google.com
+ntp server time2.google.com
+ntp server time4.google.com
+!
+!
+end
+

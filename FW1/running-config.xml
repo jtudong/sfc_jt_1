@@ -402,7 +402,7 @@
                         <passive>no</passive>
                         <gr-delay>10</gr-delay>
                         <metric>10</metric>
-                        <priority>1</priority>
+                        <priority>0</priority>
                         <hello-interval>10</hello-interval>
                         <dead-counts>4</dead-counts>
                         <retransmit-interval>5</retransmit-interval>

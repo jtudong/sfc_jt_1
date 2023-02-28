@@ -1,0 +1,88 @@
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+service compress-config
+!
+hostname DCAggS1
+!
+logging buffered 32768
+enable password cisco
+!
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+clock timezone mst -7 0
+vtp mode off
+!
+ip vrf management
+ip domain-name company.pri
+ip name-server 208.67.200.200
+ip name-server 4.2.2.2
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+
+vlan 10
+ name users_1
+
+spanning-tree vlan 10 root primary
+
+interface Ethernet0/0
+ description Core1 e0/2
+ no switchport
+ ip address 10.0.0.33 255.255.255.252
+ ip ospf 1 area 0.0.0.0
+ no shutdown
+
+interface Ethernet2/3
+ description management
+ no switchport
+ ip vrf forwarding management
+ ip address 172.31.255.12 255.255.255.0
+ no shutdown
+
+interface Vlan10
+ description users_1
+ ip add 10.0.10.2 255.255.255.0
+ ip ospf 1 area 0.0.0.0
+ glbp 10 ip 10.0.10.1
+ glbp 10 priority 110
+ glbp 10 preempt delay minimum 120
+ glbp 10 forwarder preempt delay minimum 120
+ no shutdown
+
+router osfp 1
+ router-id 192.0.2.12
+ passive-interface default
+ no passive-interface Ethernet0/0
+
+no ip http server
+no ip http secure-server
+
+ip ssh version 2
+
+snmp-server community company.read RO
+snmp-server location Corp
+snmp-server chassis-id DCAggS1
+snmp ifmib ifindex persist
+line con 0
+ session-timeout 30
+ exec-timeout 15 0
+ privilege level 15
+ logging synchronous
+ login local
+ transport preferred none
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+ escape-character BREAK
+
+

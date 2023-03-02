@@ -1,6 +1,6 @@
-Current configuration : 2601 bytes
+Current configuration : 2725 bytes
 !
-! Last configuration change at 23:13:58 mst Mon Feb 27 2023 by lab
+! Last configuration change at 21:59:50 mst Wed Mar 1 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -84,7 +84,10 @@ interface Ethernet0/3
  shutdown
 !
 interface Ethernet1/0
- shutdown
+ description Core2 e1/0
+ no switchport
+ ip address 10.0.0.41 255.255.255.252
+ ip ospf 1 area 0.0.0.0
 !
 interface Ethernet1/1
  shutdown
@@ -116,6 +119,7 @@ router ospf 1
  no passive-interface Ethernet0/0
  no passive-interface Ethernet0/1
  no passive-interface Ethernet0/2
+ no passive-interface Ethernet1/0
 !
 ip forward-protocol nd
 !

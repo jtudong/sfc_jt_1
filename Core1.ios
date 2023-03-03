@@ -1,6 +1,6 @@
-Current configuration : 2725 bytes
+Current configuration : 2818 bytes
 !
-! Last configuration change at 21:59:50 mst Wed Mar 1 2023 by lab
+! Last configuration change at 21:56:38 mst Thu Mar 2 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -81,7 +81,10 @@ interface Ethernet0/2
  ip ospf 1 area 0.0.0.0
 !
 interface Ethernet0/3
- shutdown
+ description DCAggS1 e0/0
+ no switchport
+ ip address 10.0.0.45 255.255.255.252
+ ip ospf 1 area 0.0.0.0
 !
 interface Ethernet1/0
  description Core2 e1/0

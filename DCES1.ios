@@ -1,6 +1,6 @@
-Current configuration : 2293 bytes
+Current configuration : 2318 bytes
 !
-! Last configuration change at 16:43:58 mst Sat Mar 4 2023 by lab
+! Last configuration change at 18:04:14 mst Sat Mar 4 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -48,6 +48,9 @@ spanning-tree extend system-id
 !
 vlan 10
  name server_1
+!
+vlan 20
+ name DC-Users
 !
 !
 !

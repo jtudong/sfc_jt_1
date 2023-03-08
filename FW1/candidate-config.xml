@@ -96,7 +96,7 @@
                   <enable>yes</enable>
                   <profile>LLDP-profile-1</profile>
                 </lldp>
-                <interface-management-profile>https-ssh-ping</interface-management-profile>
+                <interface-management-profile>ping</interface-management-profile>
               </layer3>
             </entry>
             <entry name="ethernet1/2">
@@ -112,13 +112,13 @@
                   <enable>no</enable>
                 </sdwan-link-settings>
                 <lldp>
-                  <enable>yes</enable>
+                  <enable>no</enable>
                   <profile>LLDP-profile-1</profile>
                 </lldp>
                 <ip>
                   <entry name="10.0.0.14/28"/>
                 </ip>
-                <interface-management-profile>https-ssh-ping</interface-management-profile>
+                <interface-management-profile>http-https-telnet-ssh-ping</interface-management-profile>
               </layer3>
               <comment>link to IAS1 eth0/0</comment>
             </entry>
@@ -137,6 +137,9 @@
               <https>yes</https>
               <ssh>yes</ssh>
               <ping>yes</ping>
+              <permitted-ip>
+                <entry name="10.0.20.0/24"/>
+              </permitted-ip>
             </entry>
             <entry name="ping">
               <ping>yes</ping>
@@ -145,6 +148,13 @@
               <ssh>yes</ssh>
               <ping>yes</ping>
               <telnet>no</telnet>
+            </entry>
+            <entry name="http-https-telnet-ssh-ping">
+              <http>yes</http>
+              <https>yes</https>
+              <ssh>yes</ssh>
+              <ping>yes</ping>
+              <telnet>yes</telnet>
             </entry>
           </interface-management-profile>
           <lldp-profile>
@@ -590,12 +600,9 @@
                   </tag>
                 </entry>
                 <entry name="interzone-default" uuid="298994f6-e1cc-4b38-b334-c684c8495a22">
-                  <action>allow</action>
+                  <action>deny</action>
                   <log-start>yes</log-start>
-                  <log-end>yes</log-end>
-                  <tag>
-                    <member>permissive</member>
-                  </tag>
+                  <log-end>no</log-end>
                 </entry>
               </rules>
             </default-security-rules>
@@ -629,6 +636,79 @@
             </nat>
             <security>
               <rules>
+                <entry name="deny known malicious IP" uuid="5031cb17-2543-4644-8087-81be451be1b4">
+                  <to>
+                    <member>outside</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>panw-bulletproof-ip-list</member>
+                    <member>panw-highrisk-ip-list</member>
+                    <member>panw-known-ip-list</member>
+                    <member>panw-torexit-ip-list</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>drop</action>
+                  <log-start>yes</log-start>
+                  <log-end>no</log-end>
+                  <rule-type>interzone</rule-type>
+                </entry>
+                <entry name="permit ALL dc-users" uuid="688cb184-b61c-44cb-bf1c-f8d1b9394e63">
+                  <to>
+                    <member>inside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>DC-Users</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
+                  <rule-type>intrazone</rule-type>
+                </entry>
                 <entry name="permit outside BGP" uuid="dc4ced32-3d6f-485c-998e-ab735daabf51">
                   <to>
                     <member>outside</member>
@@ -704,6 +784,44 @@
                     <member>inside</member>
                   </tag>
                 </entry>
+                <entry name="permit inside management" uuid="f71493bc-8956-4efb-b56d-e99316003fbc">
+                  <to>
+                    <member>inside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>DC-Users</member>
+                    <member>server_1</member>
+                  </source>
+                  <destination>
+                    <member>fw1 eth1-2</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>ssh</member>
+                    <member>ssl</member>
+                    <member>web-browsing</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
+                  <rule-type>intrazone</rule-type>
+                  <group-tag>inside</group-tag>
+                </entry>
                 <entry name="permit to Internet" uuid="fc461c0e-8645-46aa-b2c4-15c3f254a449">
                   <to>
                     <member>outside</member>
@@ -725,6 +843,7 @@
                   </category>
                   <application>
                     <member>dns</member>
+                    <member>ntp</member>
                     <member>ping</member>
                     <member>ssh</member>
                   </application>
@@ -741,6 +860,7 @@
                   <tag>
                     <member>outside</member>
                   </tag>
+                  <rule-type>interzone</rule-type>
                 </entry>
                 <entry name="Allow Internet - ALL" uuid="6d9eb352-bf4b-446d-aafb-7a8d12fa4c6f">
                   <to>
@@ -778,6 +898,7 @@
                     <member>permissive</member>
                     <member>outside</member>
                   </tag>
+                  <rule-type>interzone</rule-type>
                 </entry>
               </rules>
             </security>
@@ -796,6 +917,18 @@
             </entry>
             <entry name="fw1 eth1-1">
               <ip-netmask>100.64.0.2/32</ip-netmask>
+            </entry>
+            <entry name="DC-Users">
+              <ip-netmask>10.0.20.0/24</ip-netmask>
+              <description>vlan 20</description>
+            </entry>
+            <entry name="server_1">
+              <ip-netmask>10.0.10.0/24</ip-netmask>
+              <description>vlan 10</description>
+            </entry>
+            <entry name="fw1 eth1-2">
+              <ip-netmask>10.0.0.14/32</ip-netmask>
+              <description>eth1/2</description>
             </entry>
           </address>
           <tag>

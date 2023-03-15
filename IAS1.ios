@@ -1,6 +1,6 @@
-Current configuration : 2431 bytes
+Current configuration : 2435 bytes
 !
-! Last configuration change at 20:51:36 mst Mon Feb 27 2023 by lab
+! Last configuration change at 12:58:58 mst Wed Mar 15 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -33,8 +33,7 @@ ip vrf management
 !
 !
 ip domain-name company.pri
-ip name-server 208.67.200.200
-ip name-server 4.2.2.2
+ip name-server 4.2.2.1
 ip cef
 login on-failure log
 login on-success log
@@ -48,6 +47,9 @@ archive
 spanning-tree mode pvst
 spanning-tree extend system-id
 !
+!
+vlan 2
+ name management
 !
 vlan 100
  name internet
@@ -73,20 +75,18 @@ interface Ethernet0/0
  spanning-tree portfast edge
 !
 interface Ethernet0/1
- shutdown
-!
-interface Ethernet0/2
- description IDS1 e0/0
+ description Core1 e0/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
+!
+interface Ethernet0/2
+ shutdown
 !
 interface Ethernet0/3
  shutdown
 !
 interface Ethernet1/0
- description IDS2 e0/1
- switchport trunk encapsulation dot1q
- switchport mode trunk
+ shutdown
 !
 interface Ethernet1/1
  shutdown
@@ -99,17 +99,20 @@ interface Ethernet1/3
  ip vrf forwarding management
  ip address 172.31.255.6 255.255.255.0
 !
+interface Vlan2
+ ip address 10.0.2.6 255.255.255.0
+!
 interface Vlan100
  description Internet
  ip address 10.0.0.6 255.255.255.240
 !
-ip default-gateway 10.0.0.1
 ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
 !
-ip route 0.0.0.0 0.0.0.0 10.0.0.1
+ip route 0.0.0.0 0.0.0.0 10.0.0.14
+ip route vrf management 0.0.0.0 0.0.0.0 172.31.255.254
 ip ssh version 2
 ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
@@ -152,4 +155,3 @@ ntp server time4.google.com
 !
 !
 end
-

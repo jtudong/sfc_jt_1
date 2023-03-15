@@ -1,0 +1,331 @@
+set deviceconfig system type static
+set deviceconfig system update-server updates.paloaltonetworks.com
+set deviceconfig system update-schedule threats recurring every-30-mins at 3
+set deviceconfig system update-schedule threats recurring every-30-mins action download-and-install
+set deviceconfig system update-schedule wildfire recurring every-15-mins at 0
+set deviceconfig system update-schedule wildfire recurring every-15-mins action download-and-install
+set deviceconfig system update-schedule anti-virus recurring hourly at 20
+set deviceconfig system update-schedule anti-virus recurring hourly action download-and-install
+set deviceconfig system timezone America/Phoenix
+set deviceconfig system service disable-telnet yes
+set deviceconfig system service disable-http yes
+set deviceconfig system hostname FW1
+set deviceconfig system ip-address 172.31.255.4
+set deviceconfig system netmask 255.255.255.0
+set deviceconfig system default-gateway 172.31.255.254
+set deviceconfig system dns-setting servers primary 192.168.10.1
+set deviceconfig system dns-setting servers secondary 192.168.1.1
+set deviceconfig system motd-and-banner banner-header FW1
+set deviceconfig system motd-and-banner banner-header-color color14
+set deviceconfig system motd-and-banner banner-header-text-color color4
+set deviceconfig system motd-and-banner banner-header-footer-match no
+set deviceconfig system ntp-servers primary-ntp-server ntp-server-address time1.google.com
+set deviceconfig system ntp-servers primary-ntp-server authentication-type none
+set deviceconfig system ntp-servers secondary-ntp-server ntp-server-address time2.google.com
+set deviceconfig system ntp-servers secondary-ntp-server authentication-type none
+set deviceconfig system domain company.pri
+set deviceconfig system snmp-setting access-setting version v2c snmp-community-string company.read
+set deviceconfig system snmp-setting snmp-system location lab2
+set deviceconfig system device-telemetry device-health-performance no
+set deviceconfig system device-telemetry product-usage no
+set deviceconfig system device-telemetry threat-prevention no
+set deviceconfig system device-telemetry region Americas
+set deviceconfig setting config rematch yes
+set deviceconfig setting management hostname-type-in-syslog FQDN
+set deviceconfig setting auto-mac-detect yes
+set network interface ethernet ethernet1/1 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings upstream-nat enable no
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings upstream-nat static-ip
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings enable no
+set network interface ethernet ethernet1/1 layer3 ip 100.64.0.2/30
+set network interface ethernet ethernet1/1 layer3 lldp enable yes
+set network interface ethernet ethernet1/1 layer3 lldp profile LLDP-profile-1
+set network interface ethernet ethernet1/1 layer3 interface-management-profile ping
+set network interface ethernet ethernet1/2 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings upstream-nat enable no
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings upstream-nat static-ip
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings enable no
+set network interface ethernet ethernet1/2 layer3 lldp enable no
+set network interface ethernet ethernet1/2 layer3 lldp profile LLDP-profile-1
+set network interface ethernet ethernet1/2 layer3 ip 10.0.0.14/28
+set network interface ethernet ethernet1/2 layer3 interface-management-profile http-https-telnet-ssh-ping
+set network interface ethernet ethernet1/2 comment "link to IAS1 eth0/0"
+set network profiles monitor-profile default interval 3
+set network profiles monitor-profile default threshold 5
+set network profiles monitor-profile default action wait-recover
+set network profiles interface-management-profile https-ssh-ping https yes
+set network profiles interface-management-profile https-ssh-ping ssh yes
+set network profiles interface-management-profile https-ssh-ping ping yes
+set network profiles interface-management-profile https-ssh-ping permitted-ip 10.0.20.0/24
+set network profiles interface-management-profile ping ping yes
+set network profiles interface-management-profile ssh-ping ssh yes
+set network profiles interface-management-profile ssh-ping ping yes
+set network profiles interface-management-profile ssh-ping telnet no
+set network profiles interface-management-profile http-https-telnet-ssh-ping http yes
+set network profiles interface-management-profile http-https-telnet-ssh-ping https yes
+set network profiles interface-management-profile http-https-telnet-ssh-ping ssh yes
+set network profiles interface-management-profile http-https-telnet-ssh-ping ping yes
+set network profiles interface-management-profile http-https-telnet-ssh-ping telnet yes
+set network profiles lldp-profile LLDP-profile-1 option-tlvs management-address enabled no
+set network profiles lldp-profile LLDP-profile-1 option-tlvs port-description yes
+set network profiles lldp-profile LLDP-profile-1 option-tlvs system-name yes
+set network profiles lldp-profile LLDP-profile-1 option-tlvs system-description yes
+set network profiles lldp-profile LLDP-profile-1 option-tlvs system-capabilities yes
+set network ike crypto-profiles ike-crypto-profiles default encryption [ aes-128-cbc 3des ]
+set network ike crypto-profiles ike-crypto-profiles default hash sha1
+set network ike crypto-profiles ike-crypto-profiles default dh-group group2
+set network ike crypto-profiles ike-crypto-profiles default lifetime hours 8
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-128 encryption aes-128-cbc
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-128 hash sha256
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-128 dh-group group19
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-128 lifetime hours 8
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-256 encryption aes-256-cbc
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-256 hash sha384
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-256 dh-group group20
+set network ike crypto-profiles ike-crypto-profiles Suite-B-GCM-256 lifetime hours 8
+set network ike crypto-profiles ipsec-crypto-profiles default esp encryption [ aes-128-cbc 3des ]
+set network ike crypto-profiles ipsec-crypto-profiles default esp authentication sha1
+set network ike crypto-profiles ipsec-crypto-profiles default dh-group group2
+set network ike crypto-profiles ipsec-crypto-profiles default lifetime hours 1
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-128 esp encryption aes-128-gcm
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-128 esp authentication none
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-128 dh-group group19
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-128 lifetime hours 1
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 esp encryption aes-256-gcm
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 esp authentication none
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 dh-group group20
+set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 lifetime hours 1
+set network ike crypto-profiles global-protect-app-crypto-profiles default encryption aes-128-cbc
+set network ike crypto-profiles global-protect-app-crypto-profiles default authentication sha1
+set network qos profile default class-bandwidth-type mbps class class1 priority real-time
+set network qos profile default class-bandwidth-type mbps class class2 priority high
+set network qos profile default class-bandwidth-type mbps class class3 priority high
+set network qos profile default class-bandwidth-type mbps class class4 priority medium
+set network qos profile default class-bandwidth-type mbps class class5 priority medium
+set network qos profile default class-bandwidth-type mbps class class6 priority low
+set network qos profile default class-bandwidth-ty[ 2161.607648] serial8250: too much work for irq4
+pe mbps class class7 priority low
+set network qos profile default class-bandwidth-type mbps class class8 priority low
+set network virtual-router default protocol bgp enable yes
+set network virtual-router default protocol bgp dampening-profile default cutoff 1.25
+set network virtual-router default protocol bgp dampening-profile default reuse 0.5
+set network virtual-router default protocol bgp dampening-profile default max-hold-time 900
+set network virtual-router default protocol bgp dampening-profile default decay-half-life-reachable 300
+set network virtual-router default protocol bgp dampening-profile default decay-half-life-unreachable 900
+set network virtual-router default protocol bgp dampening-profile default enable yes
+set network virtual-router default protocol bgp routing-options graceful-restart enable yes
+set network virtual-router default protocol bgp reject-default-route no
+set network virtual-router default protocol bgp router-id 100.64.0.2
+set network virtual-router default protocol bgp local-as 65011
+set network virtual-router default protocol bgp install-route yes
+set network virtual-router default protocol bgp peer-group ISP type ebgp remove-private-as no
+set network virtual-router default protocol bgp peer-group ISP type ebgp import-nexthop original
+set network virtual-router default protocol bgp peer-group ISP type ebgp export-nexthop use-self
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 peer-address ip 100.64.0.1
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options incoming-bgp-connection remote-port 0
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options incoming-bgp-connection allow yes
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options outgoing-bgp-connection local-port 0
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options outgoing-bgp-connection allow yes
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options multihop 0
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options keep-alive-interval 30
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options open-delay-time 0
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options hold-time 90
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options idle-hold-time 15
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 connection-options min-route-adv-interval 30
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 subsequent-address-family-identifier unicast yes
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 subsequent-address-family-identifier multicast no
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 local-address ip 100.64.0.2/30
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 local-address interface ethernet1/1
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 bfd profile Inherit-vr-global-setting
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 max-prefixes 5000
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 enable yes
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 peer-as 65001
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 enable-mp-bgp no
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 address-family-identifier ipv4
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 enable-sender-side-loop-detection yes
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 reflector-client non-client
+set network virtual-router default protocol bgp peer-group ISP peer ISP1 peering-type unspecified
+set network virtual-router default protocol bgp peer-group ISP aggregated-confed-as-path yes
+set network virtual-router default protocol bgp peer-group ISP soft-reset-with-stored-info yes
+set network virtual-router default protocol bgp peer-group ISP enable yes
+set network virtual-router default protocol rip enable no
+set network virtual-router default protocol ospf enable yes
+set network virtual-router default protocol ospf area 0.0.0.0 type normal
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 bfd profile Inherit-vr-global-setting
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 enable yes
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 passive no
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 gr-delay 10
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 metric 10
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 priority 0
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 hello-interval 10
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 dead-counts 4
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 retransmit-interval 5
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 transit-delay 1
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 link-type broadcast
+set network virtual-router default protocol ospf router-id 100.64.0.2
+set network virtual-router default protocol ospf allow-redist-default-route yes
+set network virtual-router default protocol ospf export-rules redist-default new-path-type ext-2
+set network virtual-router default protocol ospf export-rules redist-default metric 100
+set network virtual-router default protocol ospfv3 enable no
+set network virtual-router default protocol redist-profile redist-default filter type [ bgp static ]
+set network virtual-router default protocol redist-profile redist-default filter destination 0.0.0.0/0
+set network virtual-router default protocol redist-profile redist-default priority 1
+set network virtual-router default protocol redist-profile redist-default action redist
+set network virtual-router default interface [ ethernet1/1 ethernet1/2 ]
+set network virtual-router default ecmp algorithm ip-modulo
+set network lldp enable yes
+set shared application
+set shared application-group
+set shared service
+set shared service-group
+set shared botnet configuration http dynamic-dns enabled yes
+set shared botnet configuration http dynamic-dns threshold 5
+set shared botnet configuration http malware-sites enabled yes
+set shared botnet configuration http malware-sites threshold 5
+set shared botnet configuration http recent-domains enabled yes
+set shared botnet configuration http recent-domains threshold 5
+set shared botnet configuration http ip-domains enabled yes
+set shared botnet configuration http ip-domains threshold 10
+set shared botnet configuration http executables-from-unknown-sites enabled yes
+set shared botnet configuration http executables-from-unknown-sites threshold 5
+set shared botnet configuration other-applications irc yes
+set shared botnet configuration unknown-applications unknown-tcp destinations-per-hour 10
+set shared botnet configuration unknown-applications unknown-tcp sessions-per-hour 10
+set shared botnet configuration unknown-applications unknown-tcp session-length maximum-bytes 100
+set shared botnet configuration unknown-applications unknown-tcp session-length minimum-bytes 50
+set shared botnet configuration unknown-applications unknown-udp destinations-per-hour 10
+set shared botnet configuration unknown-applications unknown-udp sessions-per-hour 10
+set shared botnet configuration unknown-applications unknown-udp session-length maximum-bytes 100
+set shared botnet configuration unknown-applications unknown-udp session-length minimum-bytes 50
+set shared botnet report topn 100
+set shared botnet report scheduled yes
+set zone inside network layer3 ethernet1/2
+set zone outside network layer3 ethernet1/1
+set tag inside color color2
+set tag outside color color1
+set tag permissive color color20
+set service-group
+set service
+set schedule
+set rulebase default-security-rules rules intrazone-default action allow
+set rulebase default-security-rules rules intrazone-default log-start yes
+set rulebase default-security-rules rules intrazone-default log-end yes
+set rulebase default-security-rules rules intrazone-default tag permissive
+set rulebase default-security-rules rules interzone-default action deny
+set rulebase default-security-rules rules interzone-default log-start yes
+set rulebase default-security-rules rules interzone-default log-end no
+set rulebase nat rules "default PAT" source-translation dynamic-ip-and-port interface-address ip 100.64.0.2/30
+set rulebase nat rules "default PAT" source-translation dynamic-ip-and-port interface-address interface ethernet1/1
+set rulebase nat rules "default PAT" to outside
+set rulebase nat rules "default PAT" from inside
+set rulebase nat rules "default PAT" source any
+set rulebase nat rules "default PAT" destination any
+set rulebase nat rules "default PAT" service any
+set rulebase nat rules "default PAT" to-interface ethernet1/1
+set rulebase security rules "deny known malicious IP" to outside
+set rulebase security rules "deny known malicious IP" from any
+set rulebase security rules "deny known malicious IP" source any
+set rulebase security rules "deny known malicious IP" destination [ panw-bulletproof-ip-list panw-highrisk-ip-list panw-known-ip-list panw-torexit-ip-list ]
+set rulebase security rules "deny known malicious IP" source-user any
+set rulebase security rules "deny known malicious IP" category any
+set rulebase security rules "deny known malicious IP" application any
+set rulebase security rules "deny known malicious IP" service any
+set rulebase security rules "deny known malicious IP" source-hip any
+set rulebase security rules "deny known malicious IP" destination-hip any
+set rulebase security rules "deny known malicious IP" action drop
+set rulebase security rules "deny known malicious IP" log-start yes
+set rulebase security rules "deny known malicious IP" log-end no
+set rulebase security rules "deny known malicious IP" rule-type interzone
+set rulebase security rules "permit ALL dc-users" to inside
+set rulebase security rules "permit ALL dc-users" from inside
+set rulebase security rules "permit ALL dc-users" source DC-Users
+set rulebase security rules "permit ALL dc-users" destination any
+set rulebase security rules "permit ALL dc-users" source-user any
+set rulebase security rules "permit ALL dc-users" category any
+set rulebase security rules "permit ALL dc-users" application any
+set rulebase security rules "permit ALL dc-users" service any
+set rulebase security rules "permit ALL dc-users" source-hip any
+set rulebase security rules "permit ALL dc-users" destination-hip any
+set rulebase security rules "permit ALL dc-users" action allow
+set rulebase security rules "permit ALL dc-users" rule-type intrazone
+set rulebase security rules "permit outside BGP" to outside
+set rulebase security rules "permit outside BGP" from outside
+set rulebase security rules "permit outside BGP" source "ISP1 e0-1"
+set rulebase security rules "permit outside BGP" destination "fw1 eth1-1"
+set rulebase security rules "permit outside BGP" source-user any
+set rulebase security rules "permit outside BGP" category any
+set rulebase security rules "permit outside BGP" application bgp
+set rulebase security rules "permit outside BGP" service application-default
+set rulebase security rules "permit outside BGP" source-hip any
+set rulebase security rules "permit outside BGP" destination-hip any
+set rulebase security rules "permit outside BGP" action allow
+set rulebase security rules "permit outside BGP" rule-type intrazone
+set rulebase security rules "permit outside BGP" tag outside
+set rulebase security rules "permit OSPF" to inside
+set rulebase security rules "permit OSPF" from inside
+set rulebase security rules "permit OSPF" source any
+set rulebase security rules "permit OSPF" destination any
+set rulebase security rules "permit OSPF" source-user any
+set rulebase security rules "permit OSPF" category any
+set rulebase security rules "permit OSPF" application [ ospf ospfigp ]
+set rulebase security rules "permit OSPF" service application-default
+set rulebase security rules "permit OSPF" source-hip any
+set rulebase security rules "permit OSPF" destination-hip any
+set rulebase security rules "permit OSPF" action allow
+set rulebase security rules "permit OSPF" rule-type intrazone
+set rulebase security rules "permit OSPF" tag inside
+set rulebase security rules "permit inside management" to inside
+set rulebase security rules "permit inside management" from inside
+set rulebase security rules "permit inside management" source [ DC-Users server_1 ]
+set rulebase security rules "permit inside management" destination "fw1 eth1-2"
+set rulebase security rules "permit inside management" source-user any
+set rulebase security rules "permit inside management" category any
+set rulebase security rules "permit inside management" application [ ssh ssl web-browsing ]
+set rulebase security rules "permit inside management" service application-default
+set rulebase security rules "permit inside management" source-hip any
+set rulebase security rules "permit inside management" destination-hip any
+set rulebase security rules "permit inside management" action allow
+set rulebase security rules "permit inside management" rule-type intrazone
+set rulebase security rules "permit inside management" group-tag inside
+set rulebase security rules "permit to Internet" to outside
+set rulebase security rules "permit to Internet" from inside
+set rulebase security rules "permit to Internet" source any
+set rulebase security rules "permit to Internet" destination any
+set rulebase security rules "permit to Internet" source-user any
+set rulebase security rules "permit to Internet" category any
+set rulebase security rules "permit to Internet" application [ dns ntp ping ssh ]
+set rulebase security rules "permit to Internet" service application-default
+set rulebase security rules "permit to Internet" source-hip any
+set rulebase security rules "permit to Internet" destination-hip any
+set rulebase security rules "permit to Internet" action allow
+set rulebase security rules "permit to Internet" tag outside
+set rulebase security rules "permit to Internet" rule-type interzone
+set rulebase security rules "Allow Internet - ALL" to outside
+set rulebase security rules "Allow Internet - ALL" from inside
+set rulebase security rules "Allow Internet - ALL" source any
+set rulebase security rules "Allow Internet - ALL" destination any
+set rulebase security rules "Allow Internet - ALL" source-user any
+set rulebase security rules "Allow Internet - ALL" category any
+set rulebase security rules "Allow Internet - ALL" application any
+set rulebase security rules "Allow Internet - ALL" service application-default
+set rulebase security rules "Allow Internet - ALL" source-hip any
+set rulebase security rules "Allow Internet - ALL" destination-hip any
+set rulebase security rules "Allow Internet - ALL" action allow
+set rulebase security rules "Allow Internet - ALL" tag [ permissive outside ]
+set rulebase security rules "Allow Internet - ALL" rule-type interzone
+set import network interface [ ethernet1/1 ethernet1/2 ]
+set application-group
+set application
+set address "ISP1 e0-1" ip-netmask 100.64.0.1/32
+set address "fw1 eth1-1" ip-netmask 100.64.0.2/32
+set address DC-Users ip-netmask 10.0.20.0/24
+set address DC-Users description "vlan 20"
+set address server_1 ip-netmask 10.0.10.0/24
+set address server_1 description "vlan 10"
+set address "fw1 eth1-2" ip-netmask 10.0.0.14/32
+set address "fw1 eth1-2" description eth1/2
+set mgt-config users admin phash $5$kvbbeuuh$fW4Zow37zSeCWP/RyAfveBqBTcntSHOqr.0uJlifjs1
+set mgt-config users admin permissions role-based superuser yes
+set mgt-config password-complexity enabled yes
+set mgt-config password-complexity minimum-length 8
+[edit]

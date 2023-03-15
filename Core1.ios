@@ -1,6 +1,6 @@
-Current configuration : 2852 bytes
+Current configuration : 2893 bytes
 !
-! Last configuration change at 17:25:07 mst Sat Mar 4 2023 by lab
+! Last configuration change at 13:07:16 mst Wed Mar 15 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -33,8 +33,7 @@ ip vrf management
 !
 !
 ip domain-name company.pri
-ip name-server 208.67.200.200
-ip name-server 4.2.2.2
+ip name-server 4.2.2.1
 ip cef
 login on-failure log
 login on-success log
@@ -44,10 +43,20 @@ no ipv6 cef
 !
 spanning-tree mode pvst
 spanning-tree extend system-id
+spanning-tree vlan 2,10,20,100 priority 24576
 !
+!
+vlan 2
+ name management
 !
 vlan 10
+ name servers
+!
+vlan 20
  name users_1
+!
+vlan 100
+ name internet
 !
 !
 !
@@ -63,34 +72,23 @@ vlan 10
 !
 !
 interface Ethernet0/0
- description IDS1 e0/2
- no switchport
- ip address 10.0.0.17 255.255.255.252
- ip ospf 1 area 0.0.0.0
+ description IAS1 e0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
 !
 interface Ethernet0/1
- description IDS2 e0/2
- no switchport
- ip address 10.0.0.22 255.255.255.252
- ip ospf 1 area 0.0.0.0
+ description DCAggS1 e0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
 !
 interface Ethernet0/2
- description DCAggS1 e0/0
- no switchport
- ip address 10.0.0.34 255.255.255.252
- ip ospf 1 area 0.0.0.0
+ shutdown
 !
 interface Ethernet0/3
- description DCAggS1 e0/0
- no switchport
- ip address 10.0.0.46 255.255.255.252
- ip ospf 1 area 0.0.0.0
+ shutdown
 !
 interface Ethernet1/0
- description Core2 e1/0
- no switchport
- ip address 10.0.0.41 255.255.255.252
- ip ospf 1 area 0.0.0.0
+ shutdown
 !
 interface Ethernet1/1
  shutdown
@@ -116,20 +114,34 @@ interface Ethernet2/3
  ip vrf forwarding management
  ip address 172.31.255.10 255.255.255.0
 !
+interface Vlan2
+ ip address 10.0.2.1 255.255.255.0
+ ip ospf 1 area 0.0.0.0
+!
+interface Vlan10
+ ip address 10.0.10.1 255.255.255.0
+ ip ospf 1 area 0.0.0.0
+!
+interface Vlan20
+ ip address 10.0.20.1 255.255.255.0
+ ip ospf 1 area 0.0.0.0
+!
+interface Vlan100
+ description Internet
+ ip address 10.0.0.10 255.255.255.240
+ ip ospf 1 area 0.0.0.0
+!
 router ospf 1
  router-id 192.0.2.10
  passive-interface default
- no passive-interface Ethernet0/0
- no passive-interface Ethernet0/1
- no passive-interface Ethernet0/2
- no passive-interface Ethernet0/3
- no passive-interface Ethernet1/0
+ no passive-interface Vlan100
 !
 ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
 !
+ip route vrf management 0.0.0.0 0.0.0.0 172.31.255.254
 ip ssh version 2
 ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
@@ -172,4 +184,3 @@ ntp server time4.google.com
 !
 !
 end
-

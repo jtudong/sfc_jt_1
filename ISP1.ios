@@ -1,4 +1,6 @@
-Current configuration : 2409 bytes
+Current configuration : 2478 bytes
+!
+! Last configuration change at 22:22:12 MST Fri Mar 17 2023 by lab
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone
@@ -93,7 +95,7 @@ lldp run
 !
 !
 interface Loopback0
- ip address 192.0.2.1 255.255.255.255
+ ip address 192.0.2.2 255.255.255.255
 !
 interface Ethernet0/0
  ip address 192.168.10.32 255.255.255.0
@@ -172,3 +174,4 @@ ntp server time2.google.com
 ntp server time4.google.com
 !
 end
+

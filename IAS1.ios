@@ -1,6 +1,6 @@
-Current configuration : 2435 bytes
+Current configuration : 2305 bytes
 !
-! Last configuration change at 12:58:58 mst Wed Mar 15 2023 by lab
+! Last configuration change at 22:17:39 mst Thu Apr 6 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone

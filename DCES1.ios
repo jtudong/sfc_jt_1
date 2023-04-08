@@ -1,3 +1,9 @@
+Current configuration : 2811 bytes
+!
+! Last configuration change at 14:23:46 mst Sat Apr 8 2023 by lab
+! NVRAM config last updated at 14:23:46 mst Sat Apr 8 2023 by lab
+!
+version 15.2
 service timestamps debug datetime msec localtime show-timezone
 service timestamps log datetime msec localtime show-timezone
 no service password-encryption
@@ -5,21 +11,40 @@ service compress-config
 !
 hostname DCES1
 !
+boot-start-marker
+boot-end-marker
+!
+!
 logging buffered 32768
 enable password cisco
 !
 username lab privilege 15 password 0 lab
 username cisco privilege 15 password 0 cisco
+no aaa new-model
 clock timezone mst -7 0
+!
+!
+!
+!
+!
 vtp mode off
 !
 ip vrf management
+!
+!
+!
 ip domain-name company.pri
 ip name-server 4.2.2.1
 ip cef
 login on-failure log
 login on-success log
 no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
 !
 vlan 2
  name management
@@ -29,6 +54,19 @@ vlan 10
 !
 vlan 20
  name users_1
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 interface Ethernet0/0
  description DCAggS1 e0/2
@@ -40,31 +78,69 @@ interface Ethernet0/1
  switchport access vlan 10
  switchport mode access
  spanning-tree portfast edge
- no shutdown
 !
 interface Ethernet0/2
- description win-mgmt01
- switchport access vlan 20
+ switchport access vlan 10
  switchport mode access
  spanning-tree portfast edge
- no shutdown
+!
+interface Ethernet0/3
+ description dc2
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast edge
+!
+interface Ethernet1/0
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast edge
+!
+interface Ethernet1/1
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+!
+interface Ethernet2/0
+!
+interface Ethernet2/1
+!
+interface Ethernet2/2
+!
+interface Ethernet2/3
+ description management
+ no switchport
+ ip vrf forwarding management
+ ip address 172.31.255.14 255.255.255.0
 !
 interface Vlan2
  description management
  ip address 10.0.2.14 255.255.255.0
- no shutdown
+ ip ospf 1 area 0
+!
+router ospf 1
+ passive-interface default
+ no passive-interface Vlan2
+!
+ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
 !
-ip route 0.0.0.0 0.0.0.0 10.0.2.1
-crypto key gen rsa gen mod 1024
 ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
 !
 snmp-server community company.read RO
 snmp-server location Corp
 snmp-server chassis-id DCAggS1
 snmp ifmib ifindex persist
+!
+control-plane
+!
 !
 line con 0
  session-timeout 30
@@ -87,10 +163,11 @@ line vty 0 4
  escape-character BREAK
 !
 ntp server time1.google.com
-ntp server time2.google.com
 ntp server time3.google.com
+ntp server pool.ntp.org
+ntp server time-pnp.cisco.com minpoll 8
 ntp server time4.google.com
+ntp server time2.google.com
 !
 !
 end
-

@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <config version="10.1.0" urldb="paloaltonetworks" detail-version="10.1.9">
   <mgt-config>
     <users>
@@ -581,12 +582,15 @@
           <rulebase>
             <default-security-rules>
               <rules>
-                <entry name="intrazone-default" uuid="f19d7b2c-3d8d-4a4e-8d4e-32a66aa29ad0">
-                  <action>deny</action>
+                <entry name="intrazone-default" uuid="bee2906f-fdb8-496d-9ef9-161eb21096e8">
+                  <action>allow</action>
                   <log-start>yes</log-start>
                   <log-end>yes</log-end>
+                  <tag>
+                    <member>permissive</member>
+                  </tag>
                 </entry>
-                <entry name="interzone-default" uuid="802e2c58-3da4-47ba-a68e-5a13ee3c63a2">
+                <entry name="interzone-default" uuid="298994f6-e1cc-4b38-b334-c684c8495a22">
                   <action>allow</action>
                   <log-start>yes</log-start>
                   <log-end>yes</log-end>
@@ -598,7 +602,7 @@
             </default-security-rules>
             <nat>
               <rules>
-                <entry name="default PAT" uuid="3820534b-4354-4766-9f3b-c97bd8cd3b6b">
+                <entry name="default PAT" uuid="7ab69691-7056-450b-9b50-1281ba2aee54">
                   <source-translation>
                     <dynamic-ip-and-port>
                       <interface-address>
@@ -626,7 +630,7 @@
             </nat>
             <security>
               <rules>
-                <entry name="permit outside BGP" uuid="db9dac5e-6e44-441d-81d6-cf4f41f2d03b">
+                <entry name="permit outside BGP" uuid="dc4ced32-3d6f-485c-998e-ab735daabf51">
                   <to>
                     <member>outside</member>
                   </to>
@@ -634,12 +638,10 @@
                     <member>outside</member>
                   </from>
                   <source>
-                    <member>fw1 eth1-1</member>
                     <member>ISP1 e0-1</member>
                   </source>
                   <destination>
                     <member>fw1 eth1-1</member>
-                    <member>ISP1 e0-1</member>
                   </destination>
                   <source-user>
                     <member>any</member>
@@ -665,7 +667,7 @@
                     <member>outside</member>
                   </tag>
                 </entry>
-                <entry name="permit OSPF" uuid="71792c3e-75b8-470a-9071-658da36299c4">
+                <entry name="permit OSPF" uuid="4eb551dd-3eef-40ce-ad79-2d4ff7e5cc4e">
                   <to>
                     <member>inside</member>
                   </to>
@@ -703,7 +705,7 @@
                     <member>inside</member>
                   </tag>
                 </entry>
-                <entry name="permit to Internet" uuid="d99d862c-5f2e-483f-8f7b-ec920861b57c">
+                <entry name="permit to Internet" uuid="fc461c0e-8645-46aa-b2c4-15c3f254a449">
                   <to>
                     <member>outside</member>
                   </to>
@@ -741,7 +743,7 @@
                     <member>outside</member>
                   </tag>
                 </entry>
-                <entry name="Allow Internet - ALL" uuid="4168be49-6071-414b-b5d3-c9e51a9085e5">
+                <entry name="Allow Internet - ALL" uuid="6d9eb352-bf4b-446d-aafb-7a8d12fa4c6f">
                   <to>
                     <member>outside</member>
                   </to>

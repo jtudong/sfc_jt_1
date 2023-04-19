@@ -1,7 +1,7 @@
-Current configuration : 2811 bytes
+Current configuration : 2833 bytes
 !
-! Last configuration change at 14:23:46 mst Sat Apr 8 2023 by lab
-! NVRAM config last updated at 14:23:46 mst Sat Apr 8 2023 by lab
+! Last configuration change at 19:03:02 mst Tue Apr 18 2023 by lab
+! NVRAM config last updated at 19:03:03 mst Tue Apr 18 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -47,7 +47,7 @@ spanning-tree extend system-id
 !
 !
 vlan 2
- name management
+ name management_dc
 !
 vlan 10
  name servers
@@ -80,6 +80,7 @@ interface Ethernet0/1
  spanning-tree portfast edge
 !
 interface Ethernet0/2
+ description ca1
  switchport access vlan 10
  switchport mode access
  spanning-tree portfast edge
@@ -171,3 +172,4 @@ ntp server time2.google.com
 !
 !
 end
+

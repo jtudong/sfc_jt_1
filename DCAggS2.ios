@@ -1,6 +1,7 @@
-Current configuration : 2576 bytes
+Current configuration : 2654 bytes
 !
-! Last configuration change at 14:04:49 mst Sat Apr 8 2023
+! Last configuration change at 17:36:44 mst Sun Apr 16 2023 by lab
+! NVRAM config last updated at 17:49:24 mst Sun Apr 16 2023 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -46,7 +47,7 @@ spanning-tree extend system-id
 !
 !
 vlan 2
- name management
+ name management_dc
 !
 vlan 10
  name servers
@@ -170,3 +171,4 @@ ntp server time4.google.com
 !
 !
 end
+

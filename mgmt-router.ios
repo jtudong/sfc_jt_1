@@ -1,4 +1,4 @@
-Current configuration : 2204 bytes
+Current configuration : 2215 bytes
 !
 ! No configuration change since last restart
 !
@@ -155,7 +155,7 @@ line vty 0 4
 !
 ntp server time1.google.com
 ntp server time3.google.com
-ntp server 34.202.215.187
+ntp server 34.202.215.187 minpoll 10
 ntp server time2.google.com
 ntp server time4.google.com
 !
@@ -163,3 +163,4 @@ pnp profile pnp_cco_profile
  transport https ipv4 52.203.231.173 port 443
 !
 end
+

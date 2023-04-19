@@ -1,8 +1,54 @@
-Current configuration : 2559 bytes
+Current configuration : 2564 bytes
 !
-! Last configuration change at 13:50:10 mst Sat Apr 8 2023 by lab
-! NVRAM config last updated at 13:51:07 mst Sat Apr 8 2023 by lab
-!!
+! Last configuration change at 18:58:02 mst Tue Apr 18 2023 by lab
+! NVRAM config last updated at 18:58:04 mst Tue Apr 18 2023 by lab
+!
+version 15.2
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+service compress-config
+!
+hostname DCAggS1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 32768
+enable password cisco
+!
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+no aaa new-model
+clock timezone mst -7 0
+!
+!
+!
+!
+!
+vtp mode off
+!
+ip vrf management
+!
+!
+!
+ip domain-name company.pri
+ip name-server 4.2.2.1
+ip cef
+
+DCAggS1#wr
+Building configuration...
+Compressed configuration from 2564 bytes to 1525 bytes[OK]
+DCAggS1#term len 0
+DCAggS1#sh run
+Building configuration...
+
+Current configuration : 2564 bytes
+!
+! Last configuration change at 18:58:02 mst Tue Apr 18 2023 by lab
+! NVRAM config last updated at 21:27:59 mst Tue Apr 18 2023 by lab
+!
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
 service timestamps log datetime msec localtime show-timezone
@@ -47,7 +93,7 @@ spanning-tree extend system-id
 !
 !
 vlan 2
- name management
+ name management_dc
 !
 vlan 10
  name servers
@@ -162,3 +208,4 @@ ntp server time2.google.com
 !
 !
 end
+

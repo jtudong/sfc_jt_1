@@ -1,7 +1,6 @@
-Current configuration : 2564 bytes
+Current configuration : 2514 bytes
 !
-! Last configuration change at 18:58:02 mst Tue Apr 18 2023 by lab
-! NVRAM config last updated at 21:27:59 mst Tue Apr 18 2023 by lab
+! Last configuration change at 22:09:16 mst Tue Apr 18 2023
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone
@@ -9,7 +8,7 @@ service timestamps log datetime msec localtime show-timezone
 no service password-encryption
 service compress-config
 !
-hostname DCAggS1
+hostname LabS1
 !
 boot-start-marker
 boot-end-marker
@@ -55,8 +54,11 @@ vlan 10
 vlan 20
  name users_1
 !
-vlan 100
- name internet
+vlan 4010
+ name lab_servers
+!
+vlan 4020
+ name lab_users_1
 !
 !
 !
@@ -72,42 +74,40 @@ vlan 100
 !
 !
 interface Ethernet0/0
- description Core1 e0/1
+ description Core1 e0/3
+ switchport trunk allowed vlan 1,2,10,20
  switchport trunk encapsulation dot1q
  switchport mode trunk
 !
 interface Ethernet0/1
-!
-interface Ethernet0/2
- description DCES1 e0/0
+ description NXOS-1 e1/1
  switchport trunk encapsulation dot1q
  switchport mode trunk
 !
+interface Ethernet0/2
+ shutdown
+!
 interface Ethernet0/3
+ shutdown
 !
 interface Ethernet1/0
+ shutdown
 !
 interface Ethernet1/1
+ shutdown
 !
 interface Ethernet1/2
+ shutdown
 !
 interface Ethernet1/3
-!
-interface Ethernet2/0
-!
-interface Ethernet2/1
-!
-interface Ethernet2/2
-!
-interface Ethernet2/3
  description management
  no switchport
  ip vrf forwarding management
- ip address 172.31.255.12 255.255.255.0
+ ip address 172.31.255.8 255.255.255.0
 !
 interface Vlan2
  description management
- ip address 10.0.2.12 255.255.255.0
+ ip address 10.0.2.8 255.255.255.0
  ip ospf 1 area 0
 !
 router ospf 1
@@ -129,7 +129,7 @@ ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 snmp-server community company.read RO
 snmp-server location Corp
-snmp-server chassis-id DCAggS1
+snmp-server chassis-id LabS1
 snmp ifmib ifindex persist
 !
 control-plane
@@ -156,10 +156,9 @@ line vty 0 4
  escape-character BREAK
 !
 ntp server time1.google.com
+ntp server time2.google.com
 ntp server time3.google.com
 ntp server time4.google.com
-ntp server time2.google.com
 !
 !
 end
-

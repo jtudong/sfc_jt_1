@@ -71,6 +71,13 @@
         <scheduled>yes</scheduled>
       </report>
     </botnet>
+    <content-preview>
+      <application/>
+      <application-type>
+        <category/>
+        <technology/>
+      </application-type>
+    </content-preview>
   </shared>
   <devices>
     <entry name="localhost.localdomain">
@@ -96,7 +103,7 @@
                   <enable>yes</enable>
                   <profile>LLDP-profile-1</profile>
                 </lldp>
-                <interface-management-profile>ping</interface-management-profile>
+                <interface-management-profile>https-ssh-ping</interface-management-profile>
               </layer3>
             </entry>
             <entry name="ethernet1/2">
@@ -112,13 +119,13 @@
                   <enable>no</enable>
                 </sdwan-link-settings>
                 <lldp>
-                  <enable>no</enable>
+                  <enable>yes</enable>
                   <profile>LLDP-profile-1</profile>
                 </lldp>
                 <ip>
                   <entry name="10.0.0.14/28"/>
                 </ip>
-                <interface-management-profile>http-https-telnet-ssh-ping</interface-management-profile>
+                <interface-management-profile>https-ssh-ping</interface-management-profile>
               </layer3>
               <comment>link to IAS1 eth0/0</comment>
             </entry>
@@ -137,9 +144,6 @@
               <https>yes</https>
               <ssh>yes</ssh>
               <ping>yes</ping>
-              <permitted-ip>
-                <entry name="10.0.20.0/24"/>
-              </permitted-ip>
             </entry>
             <entry name="ping">
               <ping>yes</ping>
@@ -148,13 +152,6 @@
               <ssh>yes</ssh>
               <ping>yes</ping>
               <telnet>no</telnet>
-            </entry>
-            <entry name="http-https-telnet-ssh-ping">
-              <http>yes</http>
-              <https>yes</https>
-              <ssh>yes</ssh>
-              <ping>yes</ping>
-              <telnet>yes</telnet>
             </entry>
           </interface-management-profile>
           <lldp-profile>
@@ -506,13 +503,13 @@
             <disable-http>yes</disable-http>
           </service>
           <hostname>FW1</hostname>
-          <ip-address>192.168.10.34</ip-address>
+          <ip-address>172.31.255.4</ip-address>
           <netmask>255.255.255.0</netmask>
-          <default-gateway>192.168.10.1</default-gateway>
+          <default-gateway>172.31.255.254</default-gateway>
           <dns-setting>
             <servers>
-              <primary>192.168.10.1</primary>
-              <secondary>192.168.1.1</secondary>
+              <primary>10.0.10.10</primary>
+              <secondary>10.0.10.11</secondary>
             </servers>
           </dns-setting>
           <motd-and-banner>
@@ -554,6 +551,16 @@
             <threat-prevention>no</threat-prevention>
             <region>Americas</region>
           </device-telemetry>
+          <route>
+            <service>
+              <entry name="dns">
+                <source>
+                  <address>10.0.0.14/28</address>
+                  <interface>ethernet1/2</interface>
+                </source>
+              </entry>
+            </service>
+          </route>
         </system>
         <setting>
           <config>
@@ -592,14 +599,18 @@
             <default-security-rules>
               <rules>
                 <entry name="intrazone-default" uuid="f19d7b2c-3d8d-4a4e-8d4e-32a66aa29ad0">
-                  <action>deny</action>
+                  <action>drop</action>
                   <log-start>yes</log-start>
                   <log-end>yes</log-end>
+                  <icmp-unreachable>yes</icmp-unreachable>
                 </entry>
                 <entry name="interzone-default" uuid="802e2c58-3da4-47ba-a68e-5a13ee3c63a2">
-                  <action>allow</action>
-                  <log-start>yes</log-start>
-                  <log-end>no</log-end>
+                  <action>drop</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <tag>
+                    <member>deny</member>
+                  </tag>
                 </entry>
               </rules>
             </default-security-rules>
@@ -633,80 +644,7 @@
             </nat>
             <security>
               <rules>
-                <entry name="deny known malicious IP" uuid="5031cb17-2543-4644-8087-81be451be1b4">
-                  <to>
-                    <member>outside</member>
-                  </to>
-                  <from>
-                    <member>any</member>
-                  </from>
-                  <source>
-                    <member>any</member>
-                  </source>
-                  <destination>
-                    <member>panw-bulletproof-ip-list</member>
-                    <member>panw-highrisk-ip-list</member>
-                    <member>panw-known-ip-list</member>
-                    <member>panw-torexit-ip-list</member>
-                  </destination>
-                  <source-user>
-                    <member>any</member>
-                  </source-user>
-                  <category>
-                    <member>any</member>
-                  </category>
-                  <application>
-                    <member>any</member>
-                  </application>
-                  <service>
-                    <member>any</member>
-                  </service>
-                  <source-hip>
-                    <member>any</member>
-                  </source-hip>
-                  <destination-hip>
-                    <member>any</member>
-                  </destination-hip>
-                  <action>drop</action>
-                  <log-start>yes</log-start>
-                  <log-end>no</log-end>
-                  <rule-type>interzone</rule-type>
-                </entry>
-                <entry name="permit ALL dc-users" uuid="688cb184-b61c-44cb-bf1c-f8d1b9394e63">
-                  <to>
-                    <member>inside</member>
-                  </to>
-                  <from>
-                    <member>inside</member>
-                  </from>
-                  <source>
-                    <member>DC-Users</member>
-                  </source>
-                  <destination>
-                    <member>any</member>
-                  </destination>
-                  <source-user>
-                    <member>any</member>
-                  </source-user>
-                  <category>
-                    <member>any</member>
-                  </category>
-                  <application>
-                    <member>any</member>
-                  </application>
-                  <service>
-                    <member>any</member>
-                  </service>
-                  <source-hip>
-                    <member>any</member>
-                  </source-hip>
-                  <destination-hip>
-                    <member>any</member>
-                  </destination-hip>
-                  <action>allow</action>
-                  <rule-type>intrazone</rule-type>
-                </entry>
-                <entry name="permit outside BGP" uuid="dc4ced32-3d6f-485c-998e-ab735daabf51">
+                <entry name="permit outside BGP" uuid="db9dac5e-6e44-441d-81d6-cf4f41f2d03b">
                   <to>
                     <member>outside</member>
                   </to>
@@ -783,6 +721,39 @@
                     <member>inside</member>
                   </tag>
                 </entry>
+                <entry name="permit to OMV" uuid="514c1f98-2b32-4f2b-8541-bce47e8f09d7">
+                  <to>
+                    <member>outside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>192.168.1.105/32</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
+                </entry>
                 <entry name="permit to Internet" uuid="d99d862c-5f2e-483f-8f7b-ec920861b57c">
                   <to>
                     <member>outside</member>
@@ -803,10 +774,13 @@
                     <member>any</member>
                   </category>
                   <application>
+                    <member>apt-get</member>
                     <member>dns</member>
-                    <member>ntp</member>
+                    <member>git</member>
                     <member>ping</member>
                     <member>ssh</member>
+                    <member>ssl</member>
+                    <member>web-browsing</member>
                   </application>
                   <service>
                     <member>application-default</member>
@@ -821,7 +795,6 @@
                   <tag>
                     <member>outside</member>
                   </tag>
-                  <rule-type>interzone</rule-type>
                 </entry>
                 <entry name="Allow Internet - ALL" uuid="4168be49-6071-414b-b5d3-c9e51a9085e5">
                   <to>
@@ -859,7 +832,44 @@
                     <member>permissive</member>
                     <member>outside</member>
                   </tag>
-                  <rule-type>interzone</rule-type>
+                </entry>
+                <entry name="permit fw to inside DNS" uuid="c0e54ba1-5235-4bbf-8ec4-a0e9dea647de">
+                  <to>
+                    <member>inside</member>
+                  </to>
+                  <from>
+                    <member>inside</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>10.0.10.10/32</member>
+                    <member>10.0.10.11/32</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>dns</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <source-hip>
+                    <member>any</member>
+                  </source-hip>
+                  <destination-hip>
+                    <member>any</member>
+                  </destination-hip>
+                  <action>allow</action>
+                  <rule-type>intrazone</rule-type>
+                  <tag>
+                    <member>inside</member>
+                  </tag>
                 </entry>
               </rules>
             </security>
@@ -879,18 +889,6 @@
             <entry name="fw1 eth1-1">
               <ip-netmask>100.64.0.2/32</ip-netmask>
             </entry>
-            <entry name="DC-Users">
-              <ip-netmask>10.0.20.0/24</ip-netmask>
-              <description>vlan 20</description>
-            </entry>
-            <entry name="server_1">
-              <ip-netmask>10.0.10.0/24</ip-netmask>
-              <description>vlan 10</description>
-            </entry>
-            <entry name="fw1 eth1-2">
-              <ip-netmask>10.0.0.14/32</ip-netmask>
-              <description>eth1/2</description>
-            </entry>
           </address>
           <tag>
             <entry name="inside">
@@ -902,6 +900,7 @@
             <entry name="permissive">
               <color>color20</color>
             </entry>
+            <entry name="deny"/>
           </tag>
         </entry>
       </vsys>

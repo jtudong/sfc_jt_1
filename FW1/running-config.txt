@@ -20,8 +20,8 @@ set deviceconfig system motd-and-banner banner-header-color color14
 set deviceconfig system motd-and-banner banner-header-text-color color4
 set deviceconfig system motd-and-banner banner-header-footer-match no
 set deviceconfig system ntp-servers primary-ntp-server ntp-server-address 172.31.255.1
-set deviceconfig system domain company.pri
-set deviceconfig system snmp-setting access-setting version v2c snmp-community-string company.read
+set deviceconfig system domain shamrockfoods.lab
+set deviceconfig system snmp-setting access-setting version v2c snmp-community-string sfc.read
 set deviceconfig system snmp-setting snmp-system location lab
 set deviceconfig system device-telemetry device-health-performance no
 set deviceconfig system device-telemetry product-usage no

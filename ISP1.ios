@@ -1,11 +1,11 @@
-Current configuration : 2526 bytes
+Current configuration : 2622 bytes
 !
-! Last configuration change at 19:09:12 MST Tue Apr 18 2023 by lab
-! NVRAM config last updated at 19:09:13 MST Tue Apr 18 2023 by lab
+! Last configuration change at 18:01:27 MST Mon May 6 2024 by lab
+! NVRAM config last updated at 18:08:21 MST Mon May 6 2024 by lab
 !
-version 15.7
-service timestamps debug datetime msec localtime show-timezone
-service timestamps log datetime msec localtime show-timezone
+version 15.6
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
 no service password-encryption
 !
 hostname ISP1
@@ -18,6 +18,7 @@ logging buffered 32768
 enable password cisco
 !
 no aaa new-model
+ethernet lmi ce
 !
 !
 !
@@ -31,29 +32,18 @@ mmi snmp-timeout 180
 !
 !
 !
+no ip icmp rate-limit unreachable
 !
 !
-!
-!
-!
-!
-!
-!
-!
-!
-
-
 !
 ip vrf management
 !
 !
 !
 !
-ip domain lookup source-interface Ethernet0/0
-ip domain name pnjnet.local
-ip name-server 192.168.10.1
+ip domain lookup source-interface GigabitEthernet0/0
+ip domain name shamrockfoods.lab
 ip name-server 208.67.222.222
-ip name-server 192.168.1.1
 ip cef
 login on-failure log
 login on-success log
@@ -64,22 +54,23 @@ multilink bundle-name authenticated
 !
 !
 !
-!
-!
-!
-!
-!
 archive
  log config
   logging enable
   logging size 200
   notify syslog contenttype plaintext
+ path flash:ISP-
+ maximum 5
+ write-memory
 username lab privilege 15 password 0 lab
 username cisco privilege 15 password 0 cisco
 !
 redundancy
 !
 lldp run
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
 !
 !
 !
@@ -93,32 +84,36 @@ lldp run
 !
 !
 !
-!
-interface Loopback0
- ip address 192.0.2.2 255.255.255.255
-!
-interface Ethernet0/0
- ip address 192.168.10.32 255.255.255.0
+interface GigabitEthernet0/0
+ ip address dhcp
  ip nat outside
  ip virtual-reassembly in
  duplex auto
+ speed auto
+ media-type rj45
 !
-interface Ethernet0/1
+interface GigabitEthernet0/1
  description fw1 eth1/1
  ip address 100.64.0.1 255.255.255.252
  ip nat inside
  ip virtual-reassembly in
- duplex auto
+ duplex full
+ speed auto
+ media-type rj45
 !
-interface Ethernet0/2
+interface GigabitEthernet0/2
  no ip address
  shutdown
  duplex auto
+ speed auto
+ media-type rj45
 !
-interface Ethernet0/3
+interface GigabitEthernet0/3
  ip vrf forwarding management
- ip address 172.31.255.2 255.255.255.0
+ ip address 172.31.255.5 255.255.255.0
  duplex auto
+ speed auto
+ media-type rj45
 !
 router bgp 65001
  bgp log-neighbor-changes
@@ -131,26 +126,18 @@ ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
-ip nat inside source list 1 interface Ethernet0/0 overload
-ip route 0.0.0.0 0.0.0.0 192.168.10.1
+ip nat inside source list 1 interface GigabitEthernet0/0 overload
 ip ssh version 2
 !
-ipv6 ioam timestamp
 !
-snmp-server community company.read RO
+snmp-server community sfc.read RO
 snmp-server ifindex persist
-snmp-server location Corp
+snmp-server location DC
 snmp-server chassis-id ISP1
 !
 access-list 1 permit 100.64.0.0 0.0.0.255
 !
 control-plane
-!
-!
-!
-!
-!
-!
 !
 !
 line con 0
@@ -160,17 +147,19 @@ line con 0
  logging synchronous
  login local
 line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
 line vty 0 4
  exec-timeout 720 0
  logging synchronous
  login local
  transport preferred none
  transport input telnet ssh
- escape-character BREAK
 !
-ntp server time1.google.com
-ntp server time3.google.com
-ntp server time2.google.com
-ntp server time4.google.com
+no scheduler allocate
+ntp logging
+ntp source GigabitEthernet0/3
+ntp server vrf management 172.31.255.1
 !
 end

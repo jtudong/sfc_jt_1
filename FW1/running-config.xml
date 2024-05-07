@@ -56,12 +56,12 @@ deviceconfig {
         ntp-server-address 172.31.255.1;
       }
     }
-    domain company.pri;
+    domain shamrockfoods.lab;
     snmp-setting {
       access-setting {
         version {
           v2c {
-            snmp-community-string company.read;
+            snmp-community-string sfc.read;
           }
         }
       }

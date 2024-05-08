@@ -146,7 +146,7 @@ control-plane
 !
 line con 0
  session-timeout 30
- exec-timeout 60 0
+ exec-timeout 0 0
  privilege level 15
  logging synchronous
  login local

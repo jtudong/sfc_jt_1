@@ -1,11 +1,10 @@
-Current configuration : 3265 bytes
+Current configuration : 2692 bytes
 !
-! Last configuration change at 22:05:03 mst Tue Apr 18 2023 by lab
-! NVRAM config last updated at 22:11:51 mst Tue Apr 18 2023 by lab
+! Last configuration change at 15:10:10 MST Wed May 8 2024
 !
 version 15.2
-service timestamps debug datetime msec localtime show-timezone
-service timestamps log datetime msec localtime show-timezone
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
 no service password-encryption
 service compress-config
 !
@@ -16,48 +15,49 @@ boot-end-marker
 !
 !
 logging buffered 32768
+logging persistent url flash0:/ size 16384 filesize 16384
 enable password cisco
 !
-username lab privilege 15 password 0 lab
 username cisco privilege 15 password 0 cisco
+username lab privilege 15 password 0 lab
 no aaa new-model
-clock timezone mst -7 0
+clock timezone MST -7 0
 !
 !
 !
 !
 !
-vtp mode off
+vtp mode transparent
 !
 ip vrf management
 !
 !
 !
-ip domain-name company.pri
-ip name-server 4.2.2.1
+ip domain-name shamrockfoods.lab
+ip name-server 208.67.222.222
+ip name-server 4.2.2.2
 ip cef
 login on-failure log
 login on-success log
 no ipv6 cef
 !
 !
+archive
+ log config
+  logging enable
+  logging size 200
+  notify syslog contenttype plaintext
+ path flash:core1
 !
 spanning-tree mode pvst
 spanning-tree extend system-id
-spanning-tree vlan 2,10,20,100 priority 24576
 !
-!
-vlan 2
- name management_dc
 !
 vlan 10
- name servers
+ name Workstations
 !
-vlan 20
- name users_1
-!
-vlan 100
- name internet
+vlan 252
+ name Servers
 !
 !
 !
@@ -72,85 +72,64 @@ vlan 100
 !
 !
 !
-interface Ethernet0/0
- description IAS1 e0/1
- switchport trunk encapsulation dot1q
- switchport mode trunk
+interface GigabitEthernet0/0
+ negotiation auto
 !
-interface Ethernet0/1
- description DCAggS1 e0/0
- switchport trunk encapsulation dot1q
- switchport mode trunk
+interface GigabitEthernet0/1
+ negotiation auto
 !
-interface Ethernet0/2
- description DCAggS2 e0/0
- switchport trunk encapsulation dot1q
- switchport mode trunk
+interface GigabitEthernet0/2
+ negotiation auto
 !
-interface Ethernet0/3
- description LabS1 e0/0
- switchport trunk encapsulation dot1q
- switchport mode trunk
+interface GigabitEthernet0/3
+ negotiation auto
 !
-interface Ethernet1/0
- shutdown
+interface GigabitEthernet1/0
+ negotiation auto
 !
-interface Ethernet1/1
- shutdown
+interface GigabitEthernet1/1
+ negotiation auto
 !
-interface Ethernet1/2
- shutdown
+interface GigabitEthernet1/2
+ negotiation auto
 !
-interface Ethernet1/3
- shutdown
+interface GigabitEthernet1/3
+ negotiation auto
 !
-interface Ethernet2/0
- shutdown
+interface GigabitEthernet2/0
+ negotiation auto
 !
-interface Ethernet2/1
- shutdown
+interface GigabitEthernet2/1
+ negotiation auto
 !
-interface Ethernet2/2
- shutdown
+interface GigabitEthernet2/2
+ negotiation auto
 !
-interface Ethernet2/3
- description management
+interface GigabitEthernet2/3
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ negotiation auto
+!
+interface GigabitEthernet3/1
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ description switch3 e1
  no switchport
  ip vrf forwarding management
- ip address 172.31.255.10 255.255.255.0
-!
-interface Vlan2
- description management_dc
- ip address 10.0.2.1 255.255.255.0
- ip ospf 1 area 0.0.0.0
-!
-interface Vlan10
- ip address 10.0.10.1 255.255.255.0
- ip ospf 1 area 0.0.0.0
-!
-interface Vlan20
- ip address 10.0.20.1 255.255.255.0
- ip helper-address 10.0.10.10
- ip ospf 1 area 0.0.0.0
-!
-interface Vlan100
- description Internet
- ip address 10.0.0.10 255.255.255.240
- ip ospf 1 area 0.0.0.0
-!
-router ospf 1
- router-id 192.0.2.10
- priority 127
- passive-interface default
- no passive-interface Vlan2
- no passive-interface Vlan100
+ ip address 172.31.255.7 255.255.255.0
+ duplex full
+ no negotiation auto
 !
 ip forward-protocol nd
 !
 no ip http server
-no ip http secure-server
 !
-ip route vrf management 0.0.0.0 0.0.0.0 172.31.255.254
+ip route vrf management 0.0.0.0 0.0.0.0 172.31.255.1
 ip ssh version 2
 ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
@@ -158,9 +137,10 @@ ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 !
 !
-snmp-server community company.read RO
-snmp-server location Corp
-snmp-server chassis-id IDS1
+!
+snmp-server community sfc.read RO
+snmp-server location DC
+snmp-server chassis-id CORE1
 snmp ifmib ifindex persist
 !
 control-plane
@@ -168,11 +148,10 @@ control-plane
 !
 line con 0
  session-timeout 30
- exec-timeout 15 0
+ exec-timeout 0 0
  privilege level 15
  logging synchronous
  login local
- transport preferred none
 line aux 0
  exec-timeout 0 0
  privilege level 15
@@ -182,17 +161,9 @@ line vty 0 4
  logging synchronous
  login local
  transport preferred none
- transport input ssh
- transport output ssh
- escape-character BREAK
+ transport input telnet ssh
 !
-ntp server time1.google.com
-ntp server time3.google.com
-ntp server pool.ntp.org
-ntp server time4.google.com
-ntp server time2.google.com
-ntp server 34.208.249.133
-!
+ntp source GigabitEthernet3/3
+ntp server vrf management 172.31.255.1
 !
 end
-

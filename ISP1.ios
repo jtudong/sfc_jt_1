@@ -1,8 +1,9 @@
-Current configuration : 2543 bytes
+Current configuration : 2522 bytes
 !
-! Last configuration change at 14:32:16 MST Wed May 8 2024 by lab
+! Last configuration change at 14:44:23 MST Fri Aug 23 2024
 !
-version 15.6
+version 15.7
+service config
 service timestamps debug datetime msec localtime show-timezone year
 service timestamps log datetime msec localtime show-timezone year
 no service password-encryption
@@ -17,7 +18,6 @@ logging buffered 32768
 enable password cisco
 !
 no aaa new-model
-ethernet lmi ce
 !
 !
 !
@@ -31,17 +31,23 @@ mmi snmp-timeout 180
 !
 !
 !
-no ip icmp rate-limit unreachable
-!
-!
-!
-ip vrf management
 !
 !
 !
 !
-ip domain lookup source-interface GigabitEthernet0/0
-ip domain name shamrockfoods.lab
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name company.pri
 ip name-server 208.67.222.222
 ip cef
 login on-failure log
@@ -53,23 +59,16 @@ multilink bundle-name authenticated
 !
 !
 !
-archive
- log config
-  logging enable
-  logging size 200
-  notify syslog contenttype plaintext
- path flash:ISP-
- maximum 5
- write-memory
+!
+!
+!
+!
+!
 username lab privilege 15 password 0 lab
 username cisco privilege 15 password 0 cisco
 !
 redundancy
 !
-lldp run
-no cdp log mismatch duplex
-!
-ip tcp synwait-time 5
 !
 !
 !
@@ -83,60 +82,96 @@ ip tcp synwait-time 5
 !
 !
 !
-interface GigabitEthernet0/0
- ip address dhcp
+!
+interface Ethernet0/0
+ description lab-pa-220
+ ip address 100.64.0.22 255.255.255.0
  ip nat outside
  ip virtual-reassembly in
  duplex auto
- speed auto
- media-type rj45
 !
-interface GigabitEthernet0/1
- description fw1 eth1/1
- ip address 100.64.0.1 255.255.255.252
+interface Ethernet0/1
+ description fw1,2 eth1/1
+ ip address 100.64.1.1 255.255.255.248
  ip nat inside
  ip virtual-reassembly in
- duplex full
- speed auto
- media-type rj45
+ duplex auto
 !
-interface GigabitEthernet0/2
+interface Ethernet0/2
  no ip address
  shutdown
  duplex auto
- speed auto
- media-type rj45
 !
-interface GigabitEthernet0/3
- ip vrf forwarding management
- ip address 172.31.255.5 255.255.255.0
- duplex full
- speed auto
- media-type rj45
+interface Ethernet0/3
+ no ip address
+ shutdown
+ duplex auto
 !
-router bgp 65001
- bgp log-neighbor-changes
- network 0.0.0.0
- neighbor 100.64.0.2 remote-as 65011
- neighbor 100.64.0.2 soft-reconfiguration inbound
+interface Ethernet1/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/3
+ no ip address
+ shutdown
+ duplex auto
 !
 ip forward-protocol nd
 !
 !
 no ip http server
 no ip http secure-server
-ip nat inside source list 1 interface GigabitEthernet0/0 overload
+ip nat inside source list 1 interface Ethernet0/0 overload
+ip route 0.0.0.0 0.0.0.0 100.64.0.254 250
 ip ssh version 2
 !
+ipv6 ioam timestamp
 !
 snmp-server community sfc.read RO
 snmp-server ifindex persist
 snmp-server location DC
 snmp-server chassis-id ISP1
 !
-access-list 1 permit 100.64.0.0 0.0.0.255
+access-list 1 permit 100.64.0.0 0.3.255.255
 !
 control-plane
+!
+!
+!
+!
+!
+!
 !
 !
 line con 0
@@ -156,8 +191,8 @@ line vty 0 4
  transport preferred none
  transport input telnet ssh
 !
-no scheduler allocate
-ntp source GigabitEthernet0/3
-ntp server vrf management 172.31.255.1
+ntp server 216.239.35.0 prefer
+ntp server pool.ntp.org
+ntp server 34.202.215.187
 !
 end

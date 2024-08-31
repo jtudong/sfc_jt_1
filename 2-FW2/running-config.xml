@@ -1,0 +1,639 @@
+deviceconfig {
+  system {
+    device-telemetry {
+      device-health-performance no;
+      product-usage no;
+      threat-prevention no;
+      region Americas;
+    }
+    type {
+      static;
+    }
+    update-server updates.paloaltonetworks.com;
+    update-schedule {
+      threats {
+        recurring {
+          every-30-mins {
+            at 0;
+            action download-and-install;
+          }
+          threshold 24;
+          new-app-threshold 36;
+        }
+      }
+      anti-virus {
+        recurring {
+          hourly {
+            at 5;
+            action download-and-install;
+          }
+          threshold 8;
+        }
+      }
+      global-protect-clientless-vpn {
+        recurring {
+          weekly {
+            at 00:30;
+            day-of-week monday;
+            action download-and-install;
+          }
+        }
+      }
+      wildfire {
+        recurring {
+          every-15-mins {
+            at 0;
+            action download-and-install;
+          }
+        }
+      }
+    }
+    timezone America/Phoenix;
+    service {
+      disable-telnet yes;
+      disable-http yes;
+    }
+    hostname fw2;
+    ip-address 10.1.92.6;
+    netmask 255.255.255.0;
+    default-gateway 10.1.92.1;
+    dns-setting {
+      servers {
+        primary 10.1.20.8;
+      }
+    }
+    ntp-servers {
+      primary-ntp-server {
+        ntp-server-address 216.239.35.4;
+        authentication-type {
+          none;
+        }
+      }
+      secondary-ntp-server {
+        ntp-server-address 216.239.35.0;
+        authentication-type {
+          none;
+        }
+      }
+    }
+  }
+  setting {
+    config {
+      rematch yes;
+    }
+    management {
+      hostname-type-in-syslog FQDN;
+      idle-timeout 480;
+    }
+    auto-mac-detect yes;
+  }
+  high-availability {
+    interface {
+      ha1;
+      ha1-backup;
+      ha2 {
+        port ethernet1/8;
+        ip-address 1.0.0.2;
+        netmask 255.255.255.252;
+      }
+    }
+    group {
+      group-id 1;
+      peer-ip 10.1.92.5;
+      election-option {
+        preemptive yes;
+        timers {
+          recommended;
+        }
+      }
+    }
+    enabled yes;
+  }
+}
+network {
+  interface {
+    ethernet {
+      ethernet1/1 {
+        layer3 {
+          ndp-proxy {
+            enabled no;
+          }
+          sdwan-link-settings {
+            upstream-nat {
+              enable no;
+              static-ip;
+            }
+            enable no;
+          }
+          ip {
+            100.64.1.2/29;
+          }
+          lldp {
+            enable no;
+          }
+          interface-management-profile "mgmt profile";
+        }
+        comment ISP1;
+      }
+      ethernet1/2 {
+        layer3 {
+          ndp-proxy {
+            enabled no;
+          }
+          sdwan-link-settings {
+            upstream-nat {
+              enable no;
+              static-ip;
+            }
+            enable no;
+          }
+          ip {
+            10.1.255.1/30;
+          }
+          lldp {
+            enable no;
+          }
+          interface-management-profile "mgmt profile";
+        }
+      }
+      ethernet1/8 {
+        ha;
+      }
+      ethernet1/7 {
+        layer3 {
+          ndp-proxy {
+            enabled no;
+          }
+          sdwan-link-settings {
+            upstream-nat {
+              enable no;
+              static-ip;
+            }
+            enable no;
+          }
+          ip {
+            172.31.255.1/24;
+          }
+          interface-management-profile "mgmt profile";
+          lldp {
+            enable no;
+          }
+        }
+        comment "oob mgmt";
+      }
+    }
+    tunnel {
+      units {
+        tunnel.1 {
+          ip {
+            192.168.0.1/30;
+          }
+          interface-management-profile "mgmt profile";
+        }
+      }
+    }
+  }
+  profiles {
+    monitor-profile {
+      default {
+        interval 3;
+        threshold 5;
+        action wait-recover;
+      }
+    }
+    interface-management-profile {
+      "mgmt profile" {
+        https yes;
+        http-ocsp no;
+        ssh yes;
+        snmp yes;
+        userid-service no;
+        userid-syslog-listener-ssl no;
+        userid-syslog-listener-udp no;
+        ping yes;
+        response-pages no;
+      }
+    }
+  }
+  ike {
+    crypto-profiles {
+      ike-crypto-profiles {
+        default {
+          encryption [ aes-128-cbc 3des];
+          hash sha1;
+          dh-group group2;
+          lifetime {
+            hours 8;
+          }
+        }
+        Suite-B-GCM-128 {
+          encryption aes-128-cbc;
+          hash sha256;
+          dh-group group19;
+          lifetime {
+            hours 8;
+          }
+        }
+        Suite-B-GCM-256 {
+          encryption aes-256-cbc;
+          hash sha384;
+          dh-group group20;
+          lifetime {
+            hours 8;
+          }
+        }
+      }
+      ipsec-crypto-profiles {
+        default {
+          esp {
+            encryption [ aes-128-cbc 3des];
+            authentication sha1;
+          }
+          dh-group group2;
+          lifetime {
+            hours 1;
+          }
+        }
+        Suite-B-GCM-128 {
+          esp {
+            encryption aes-128-gcm;
+            authentication none;
+          }
+          dh-group group19;
+          lifetime {
+            hours 1;
+          }
+        }
+        Suite-B-GCM-256 {
+          esp {
+            encryption aes-256-gcm;
+            authentication none;
+          }
+          dh-group group20;
+          lifetime {
+            hours 1;
+          }
+        }
+      }
+      global-protect-app-crypto-profiles {
+        default {
+          encryption aes-128-cbc;
+          authentication sha1;
+        }
+      }
+    }
+    gateway {
+      site02 {
+        authentication {
+          pre-shared-key {
+            key -AQ==fEqNCco3Yq9h5ZUglD3CZJT4lBs=TPKw8W+5h+VtffslpLSTkQ==;
+          }
+        }
+        protocol {
+          ikev1 {
+            dpd {
+              enable yes;
+            }
+          }
+          ikev2 {
+            dpd {
+              enable yes;
+            }
+          }
+          version ikev2;
+        }
+        local-address {
+          ip 100.64.1.2/29;
+          interface ethernet1/1;
+        }
+        protocol-common {
+          nat-traversal {
+            enable no;
+          }
+          fragmentation {
+            enable no;
+          }
+        }
+        peer-address {
+          ip 100.64.1.10;
+        }
+      }
+    }
+  }
+  qos {
+    profile {
+      default {
+        class-bandwidth-type {
+          mbps {
+            class {
+              class1 {
+                priority real-time;
+              }
+              class2 {
+                priority high;
+              }
+              class3 {
+                priority high;
+              }
+              class4 {
+                priority medium;
+              }
+              class5 {
+                priority medium;
+              }
+              class6 {
+                priority low;
+              }
+              class7 {
+                priority low;
+              }
+              class8 {
+                priority low;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  virtual-router {
+    default {
+      protocol {
+        bgp {
+          enable no;
+          dampening-profile {
+            default {
+              cutoff 1.25;
+              reuse 0.5;
+              max-hold-time 900;
+              decay-half-life-reachable 300;
+              decay-half-life-unreachable 900;
+              enable yes;
+            }
+          }
+          routing-options {
+            graceful-restart {
+              enable yes;
+            }
+          }
+        }
+        rip {
+          enable no;
+        }
+        ospf {
+          enable yes;
+          area {
+            0.0.0.0 {
+              type {
+                normal;
+              }
+              interface {
+                ethernet1/2 {
+                  bfd {
+                    profile Inherit-vr-global-setting;
+                  }
+                  enable yes;
+                  passive no;
+                  gr-delay 10;
+                  metric 10;
+                  priority 1;
+                  hello-interval 10;
+                  dead-counts 4;
+                  retransmit-interval 5;
+                  transit-delay 1;
+                  link-type {
+                    broadcast;
+                  }
+                }
+                tunnel.1 {
+                  bfd {
+                    profile Inherit-vr-global-setting;
+                  }
+                  enable yes;
+                  passive no;
+                  gr-delay 10;
+                  metric 10;
+                  priority 1;
+                  hello-interval 10;
+                  dead-counts 4;
+                  retransmit-interval 5;
+                  transit-delay 1;
+                  link-type {
+                    p2p;
+                  }
+                }
+              }
+            }
+          }
+          router-id 10.1.255.1;
+          reject-default-route no;
+        }
+        ospfv3 {
+          enable no;
+        }
+      }
+      interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1];
+      routing-table {
+        ip {
+          static-route {
+            primary-default {
+              nexthop {
+                ip-address 100.64.1.1;
+              }
+              bfd {
+                profile None;
+              }
+              interface ethernet1/1;
+              metric 10;
+              destination 0.0.0.0/0;
+              route-table {
+                unicast;
+              }
+            }
+            "site1 subernet" {
+              nexthop {
+                ip-address 10.1.255.2;
+              }
+              bfd {
+                profile None;
+              }
+              interface ethernet1/2;
+              metric 100;
+              admin-dist 240;
+              destination 10.1.0.0/16;
+              route-table {
+                unicast;
+              }
+            }
+          }
+        }
+      }
+      ecmp {
+        algorithm {
+          ip-modulo;
+        }
+      }
+    }
+  }
+  tunnel {
+    ipsec {
+      sit01-to-site02 {
+        auto-key {
+          ike-gateway {
+            site02;
+          }
+        }
+        tunnel-monitor {
+          enable yes;
+          destination-ip 192.168.0.2;
+        }
+        tunnel-interface tunnel.1;
+      }
+    }
+    global-protect-gateway;
+    global-protect-site-to-site;
+  }
+}
+shared {
+  application;
+  application-group;
+  service;
+  service-group;
+  botnet {
+    configuration {
+      http {
+        dynamic-dns {
+          enabled yes;
+          threshold 5;
+        }
+        malware-sites {
+          enabled yes;
+          threshold 5;
+        }
+        recent-domains {
+          enabled yes;
+          threshold 5;
+        }
+        ip-domains {
+          enabled yes;
+          threshold 10;
+        }
+        executables-from-unknown-sites {
+          enabled yes;
+          threshold 5;
+        }
+      }
+      other-applications {
+        irc yes;
+      }
+      unknown-applications {
+        unknown-tcp {
+          destinations-per-hour 10;
+          sessions-per-hour 10;
+          session-length {
+            maximum-bytes 100;
+            minimum-bytes 50;
+          }
+        }
+        unknown-udp {
+          destinations-per-hour 10;
+          sessions-per-hour 10;
+          session-length {
+            maximum-bytes 100;
+            minimum-bytes 50;
+          }
+        }
+      }
+    }
+    report {
+      topn 100;
+      scheduled yes;
+    }
+  }
+}
+zone {
+  outside {
+    network {
+      layer3 ethernet1/1;
+    }
+  }
+  inside {
+    network {
+      layer3 ethernet1/2;
+    }
+  }
+  mgmt {
+    network {
+      layer3 ethernet1/7;
+    }
+  }
+  VPN {
+    network {
+      layer3 tunnel.1;
+    }
+    enable-user-identification yes;
+  }
+}
+service-group;
+service;
+schedule;
+rulebase {
+  default-security-rules {
+    rules {
+      intrazone-default {
+        action allow;
+        log-start no;
+        log-end yes;
+      }
+      interzone-default {
+        action allow;
+        log-start no;
+        log-end yes;
+      }
+    }
+  }
+  nat {
+    rules {
+      "default DIPP primary" {
+        source-translation {
+          dynamic-ip-and-port {
+            interface-address {
+              interface ethernet1/1;
+              ip 100.64.1.2/29;
+            }
+          }
+        }
+        to outside;
+        from inside;
+        source any;
+        destination any;
+        service any;
+        to-interface ethernet1/1;
+      }
+    }
+  }
+}
+import {
+  network {
+    interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1];
+  }
+}
+application-group;
+application;
+mgt-config {
+  users {
+    admin {
+      phash $5$gtdhwiuv$4o61YCOdNLvIl1RIRj4oIPCg0AAsUCNP7jEu74XxDNA;
+      permissions {
+        role-based {
+          superuser yes;
+        }
+      }
+    }
+  }
+  password-complexity {
+    enabled yes;
+    minimum-length 8;
+  }
+}
+[edit]                                                                          

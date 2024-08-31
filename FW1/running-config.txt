@@ -1,39 +1,86 @@
-set deviceconfig system type static
-set deviceconfig system update-server updates.paloaltonetworks.com
-set deviceconfig system update-schedule threats recurring every-30-mins at 3
-set deviceconfig system update-schedule threats recurring every-30-mins action download-and-install
-set deviceconfig system update-schedule wildfire recurring every-15-mins at 0
-set deviceconfig system update-schedule wildfire recurring every-15-mins action download-and-install
-set deviceconfig system update-schedule anti-virus recurring hourly at 20
-set deviceconfig system update-schedule anti-virus recurring hourly action download-and-install
-set deviceconfig system timezone America/Phoenix
-set deviceconfig system service disable-telnet yes
-set deviceconfig system service disable-http yes
-set deviceconfig system hostname FW1
-set deviceconfig system ip-address 172.31.255.4
-set deviceconfig system netmask 255.255.255.0
-set deviceconfig system default-gateway 172.31.255.1
-set deviceconfig system dns-setting servers primary 208.67.222.22
-set deviceconfig system dns-setting servers secondary 4.2.2.1
-set deviceconfig system motd-and-banner banner-header FW1
-set deviceconfig system motd-and-banner banner-header-color color14
-set deviceconfig system motd-and-banner banner-header-text-color color4
-set deviceconfig system motd-and-banner banner-header-footer-match no
-set deviceconfig system ntp-servers primary-ntp-server ntp-server-address 172.31.255.1
-set deviceconfig system domain shamrockfoods.lab
-set deviceconfig system snmp-setting access-setting version v2c snmp-community-string sfc.read
-set deviceconfig system snmp-setting snmp-system location lab
 set deviceconfig system device-telemetry device-health-performance no
 set deviceconfig system device-telemetry product-usage no
 set deviceconfig system device-telemetry threat-prevention no
 set deviceconfig system device-telemetry region Americas
+set deviceconfig system type static 
+set deviceconfig system update-server updates.paloaltonetworks.com
+set deviceconfig system update-schedule threats recurring every-30-mins at 0
+set deviceconfig system update-schedule threats recurring every-30-mins action download-and-install
+set deviceconfig system update-schedule threats recurring threshold 24
+set deviceconfig system update-schedule threats recurring new-app-threshold 36
+set deviceconfig system update-schedule anti-virus recurring hourly at 5
+set deviceconfig system update-schedule anti-virus recurring hourly action download-and-install
+set deviceconfig system update-schedule anti-virus recurring threshold 8
+set deviceconfig system update-schedule global-protect-clientless-vpn recurring weekly at 00:30
+set deviceconfig system update-schedule global-protect-clientless-vpn recurring weekly day-of-week monday
+set deviceconfig system update-schedule global-protect-clientless-vpn recurring weekly action download-and-install
+set deviceconfig system update-schedule wildfire recurring every-15-mins at 0
+set deviceconfig system update-schedule wildfire recurring every-15-mins action download-and-install
+set deviceconfig system timezone America/Phoenix
+set deviceconfig system service disable-telnet yes
+set deviceconfig system service disable-http yes
+set deviceconfig system hostname fw1
+set deviceconfig system ip-address 10.1.92.5
+set deviceconfig system netmask 255.255.255.0
+set deviceconfig system default-gateway 10.1.92.1
+set deviceconfig system dns-setting servers primary 10.1.20.8
+set deviceconfig system ntp-servers primary-ntp-server ntp-server-address 216.239.35.4
+set deviceconfig system ntp-servers primary-ntp-server authentication-type none 
+set deviceconfig system ntp-servers secondary-ntp-server ntp-server-address 216.239.35.0
+set deviceconfig system ntp-servers secondary-ntp-server authentication-type none 
 set deviceconfig setting config rematch yes
 set deviceconfig setting management hostname-type-in-syslog FQDN
+set deviceconfig setting management idle-timeout 480
 set deviceconfig setting auto-mac-detect yes
-set network interface ethernet
+set deviceconfig high-availability interface ha1 
+set deviceconfig high-availability interface ha1-backup 
+set deviceconfig high-availability interface ha2 port ethernet1/8
+set deviceconfig high-availability interface ha2 ip-address 1.0.0.1
+set deviceconfig high-availability interface ha2 netmask 255.255.255.252
+set deviceconfig high-availability group group-id 1
+set deviceconfig high-availability group peer-ip 10.1.92.6
+set deviceconfig high-availability group election-option device-priority 90
+set deviceconfig high-availability group election-option preemptive yes
+set deviceconfig high-availability group election-option timers recommended 
+set deviceconfig high-availability enabled yes
+set network interface ethernet ethernet1/1 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings upstream-nat enable no
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings upstream-nat static-ip 
+set network interface ethernet ethernet1/1 layer3 sdwan-link-settings enable no
+set network interface ethernet ethernet1/1 layer3 ip 100.64.1.2/29 
+set network interface ethernet ethernet1/1 layer3 lldp enable no
+set network interface ethernet ethernet1/1 layer3 interface-management-profile "mgmt profile"
+set network interface ethernet ethernet1/1 comment ISP1
+set network interface ethernet ethernet1/2 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings upstream-nat enable no
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings upstream-nat static-ip 
+set network interface ethernet ethernet1/2 layer3 sdwan-link-settings enable no
+set network interface ethernet ethernet1/2 layer3 ip 10.1.255.1/30 
+set network interface ethernet ethernet1/2 layer3 lldp enable no
+set network interface ethernet ethernet1/2 layer3 interface-management-profile "mgmt profile"
+set network interface ethernet ethernet1/8 ha 
+set network interface ethernet ethernet1/7 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/7 layer3 sdwan-link-settings upstream-nat enable no
+set network interface ethernet ethernet1/7 layer3 sdwan-link-settings upstream-nat static-ip 
+set network interface ethernet ethernet1/7 layer3 sdwan-link-settings enable no
+set network interface ethernet ethernet1/7 layer3 ip 172.31.255.1/24 
+set network interface ethernet ethernet1/7 layer3 interface-management-profile "mgmt profile"
+set network interface ethernet ethernet1/7 layer3 lldp enable no
+set network interface ethernet ethernet1/7 comment "oob mgmt"
+set network interface tunnel units tunnel.1 ip 192.168.0.1/30 
+set network interface tunnel units tunnel.1 interface-management-profile "mgmt profile"
 set network profiles monitor-profile default interval 3
 set network profiles monitor-profile default threshold 5
 set network profiles monitor-profile default action wait-recover
+set network profiles interface-management-profile "mgmt profile" https yes
+set network profiles interface-management-profile "mgmt profile" http-ocsp no
+set network profiles interface-management-profile "mgmt profile" ssh yes
+set network profiles interface-management-profile "mgmt profile" snmp yes
+set network profiles interface-management-profile "mgmt profile" userid-service no
+set network profiles interface-management-profile "mgmt profile" userid-syslog-listener-ssl no
+set network profiles interface-management-profile "mgmt profile" userid-syslog-listener-udp no
+set network profiles interface-management-profile "mgmt profile" ping yes
+set network profiles interface-management-profile "mgmt profile" response-pages no
 set network ike crypto-profiles ike-crypto-profiles default encryption [ aes-128-cbc 3des ]
 set network ike crypto-profiles ike-crypto-profiles default hash sha1
 set network ike crypto-profiles ike-crypto-profiles default dh-group group2
@@ -60,6 +107,15 @@ set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 dh-group g
 set network ike crypto-profiles ipsec-crypto-profiles Suite-B-GCM-256 lifetime hours 1
 set network ike crypto-profiles global-protect-app-crypto-profiles default encryption aes-128-cbc
 set network ike crypto-profiles global-protect-app-crypto-profiles default authentication sha1
+set network ike gateway site02 authentication pre-shared-key key -AQ==fEqNCco3Yq9h5ZUglD3CZJT4lBs=TPKw8W+5h+VtffslpLSTkQ==
+set network ike gateway site02 protocol ikev1 dpd enable yes
+set network ike gateway site02 protocol ikev2 dpd enable yes
+set network ike gateway site02 protocol version ikev2
+set network ike gateway site02 local-address ip 100.64.1.2/29
+set network ike gateway site02 local-address interface ethernet1/1
+set network ike gateway site02 protocol-common nat-traversal enable no
+set network ike gateway site02 protocol-common fragmentation enable no
+set network ike gateway site02 peer-address ip 100.64.1.10
 set network qos profile default class-bandwidth-type mbps class class1 priority real-time
 set network qos profile default class-bandwidth-type mbps class class2 priority high
 set network qos profile default class-bandwidth-type mbps class class3 priority high
@@ -75,10 +131,33 @@ set network virtual-router default protocol bgp dampening-profile default max-ho
 set network virtual-router default protocol bgp dampening-profile default decay-half-life-reachable 300
 set network virtual-router default protocol bgp dampening-profile default decay-half-life-unreachable 900
 set network virtual-router default protocol bgp dampening-profile default enable yes
-set shared application
-set shared application-group
-set shared service
-set shared service-group
+set network virtual-router default protocol bgp routing-options graceful-restart enable yes
+set network virtual-router default protocol rip enable no
+set network virtual-router default protocol ospf enable yes
+set network virtual-router default protocol ospf area 0.0.0.0 type normal 
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 bfd profile Inherit-vr-global-setting
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 enable yes
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 passive no
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 gr-delay 10
+set network virtual-router default protocol ospf area 0.0.0.0 interface ethernet1/2 metric 10
+set network virtual-router default protocol ospf area 0.0.0.0 interfac-route "site1 subernet" nexthop ip-address 10.1.255.2
+set network virtual-router default routing-table ip static-route "site1 subernet" bfd profile None
+set network virtual-router default routing-table ip static-route "site1 subernet" interface ethernet1/2
+set network virtual-router default routing-table ip static-route "site1 subernet" metric 100
+set network virtual-router default routing-table ip static-route "site1 subernet" admin-dist 240
+set network virtual-router default routing-table ip static-route "site1 subernet" destination 10.1.0.0/16
+set network virtual-router default routing-table ip static-route "site1 subernet" route-table unicast 
+set network virtual-router default ecmp algorithm ip-modulo 
+set network tunnel ipsec sit01-to-site02 auto-key ike-gateway site02 
+set network tunnel ipsec sit01-to-site02 tunnel-monitor enable yes
+set network tunnel ipsec sit01-to-site02 tunnel-monitor destination-ip 192.168.0.2
+set network tunnel ipsec sit01-to-site02 tunnel-interface tunnel.1
+set network tunnel global-protect-gateway 
+set network tunnel global-protect-site-to-site 
+set shared application 
+set shared application-group 
+set shared service 
+set shared service-group 
 set shared botnet configuration http dynamic-dns enabled yes
 set shared botnet configuration http dynamic-dns threshold 5
 set shared botnet configuration http malware-sites enabled yes
@@ -100,18 +179,33 @@ set shared botnet configuration unknown-applications unknown-udp session-length 
 set shared botnet configuration unknown-applications unknown-udp session-length minimum-bytes 50
 set shared botnet report topn 100
 set shared botnet report scheduled yes
-set shared content-preview application
-set shared content-preview application-type category
-set shared content-preview application-type technology
-set zone
-set service-group
-set service
-set schedule
-set rulebase
-set application-group
-set application
-set mgt-config users admin phash $5$mmhqoqfw$ormiW2AQwmudHD2W82.wrQPr/tEpmV31E27vhSoEri6
+set zone outside network layer3 ethernet1/1
+set zone inside network layer3 ethernet1/2
+set zone mgmt network layer3 ethernet1/7
+set zone VPN network layer3 tunnel.1
+set zone VPN enable-user-identification yes
+set service-group 
+set service 
+set schedule 
+set rulebase default-security-rules rules intrazone-default action allow
+set rulebase default-security-rules rules intrazone-default log-start no
+set rulebase default-security-rules rules intrazone-default log-end yes
+set rulebase default-security-rules rules interzone-default action allow
+set rulebase default-security-rules rules interzone-default log-start no
+set rulebase default-security-rules rules interzone-default log-end yes
+set rulebase nat rules "default DIPP primary" source-translation dynamic-ip-and-port interface-address interface ethernet1/1
+set rulebase nat rules "default DIPP primary" source-translation dynamic-ip-and-port interface-address ip 100.64.1.2/29
+set rulebase nat rules "default DIPP primary" to outside
+set rulebase nat rules "default DIPP primary" from inside
+set rulebase nat rules "default DIPP primary" source any
+set rulebase nat rules "default DIPP primary" destination any
+set rulebase nat rules "default DIPP primary" service any
+set rulebase nat rules "default DIPP primary" to-interface ethernet1/1
+set import network interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1 ]
+set application-group 
+set application 
+set mgt-config users admin phash $5$gtdhwiuv$4o61YCOdNLvIl1RIRj4oIPCg0AAsUCNP7jEu74XxDNA
 set mgt-config users admin permissions role-based superuser yes
 set mgt-config password-complexity enabled yes
 set mgt-config password-complexity minimum-length 8
-[edit]
+[edit]                                                                          

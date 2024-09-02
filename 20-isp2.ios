@@ -1,0 +1,209 @@
+Current configuration : 2858 bytes
+!
+! Last configuration change at 21:22:59 MST Sun Sep 1 2024
+!
+version 15.7
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
+no service password-encryption
+!
+hostname ISP2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 32768
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+clock timezone MST -7 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip vrf management
+!
+!
+!
+!
+ip domain name company.pri
+ip name-server 208.67.222.222
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username lab privilege 15 password 0 lab
+username cisco privilege 15 password 0 cisco
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ description lab-pa-220
+ ip address 100.64.0.23 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+ shutdown
+ duplex auto
+!
+interface Ethernet0/1
+ description pub-s1
+ ip address 100.64.2.1 255.255.255.248
+ ip nat inside
+ ip virtual-reassembly in
+ shutdown
+ duplex auto
+!
+interface Ethernet0/2
+ description site02-pub-sw1
+ ip address 100.64.2.9 255.255.255.248
+ ip nat inside
+ ip virtual-reassembly in
+ shutdown
+ duplex auto
+!
+interface Ethernet0/3
+ description site03-pub-sw1
+ ip address 100.64.2.17 255.255.255.248
+ ip nat inside
+ ip virtual-reassembly in
+ shutdown
+ duplex auto
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/3
+ ip vrf forwarding management
+ ip address 172.31.255.20 255.255.255.0
+ duplex auto
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list 1 interface Ethernet0/0 overload
+ip route 0.0.0.0 0.0.0.0 100.64.0.254 250
+ip route vrf management 10.1.0.0 255.255.0.0 172.31.255.5 250
+ip ssh version 2
+!
+ipv6 ioam timestamp
+!
+snmp-server community sfc.read RO
+snmp-server ifindex persist
+snmp-server location DC
+snmp-server chassis-id ISP2
+!
+access-list 1 permit 100.64.0.0 0.3.255.255
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ session-timeout 30 
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ login local
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ exec-timeout 720 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input telnet ssh
+!
+ntp server 216.239.35.0
+ntp server 34.202.215.187
+ntp server pool.ntp.org
+ntp server 216.239.35.4 prefer
+!
+end

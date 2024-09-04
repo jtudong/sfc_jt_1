@@ -1,7 +1,7 @@
-Current configuration : 2678 bytes
+Current configuration : 2784 bytes
 !
-! Last configuration change at 19:14:02 MST Sat Aug 31 2024 by lab
-! NVRAM config last updated at 19:00:07 MST Sat Aug 31 2024 by lab
+! Last configuration change at 22:02:36 MST Tue Sep 3 2024 by lab
+! NVRAM config last updated at 22:02:55 MST Tue Sep 3 2024 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone year
@@ -9,7 +9,7 @@ service timestamps log datetime msec localtime show-timezone year
 no service password-encryption
 service compress-config
 !
-hostname site02-sw1
+hostname site02-core-sw1
 !
 boot-start-marker
 boot-end-marker
@@ -34,7 +34,7 @@ ip vrf management
 !
 !
 ip domain-name company.pri
-ip name-server 208.67.222.222
+ip name-server 10.1.20.8
 ip cef
 login on-failure log
 login on-success log
@@ -133,13 +133,15 @@ no ip http server
 no ip http secure-server
 !
 ip route 0.0.0.0 0.0.0.0 10.2.255.1 250
-ip ssh version 2
 ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 !
 !
 !
+snmp-server community sfc.read RO
+snmp-server location site02
+snmp-server chassis-id site02-core-sw1
 !
 control-plane
 !
@@ -161,7 +163,8 @@ line vty 0 4
  transport preferred none
  transport input telnet ssh
 !
-ntp server 216.239.35.0 prefer
+ntp server 216.239.35.0
+ntp server 216.239.35.4 prefer
 !
 !
 end

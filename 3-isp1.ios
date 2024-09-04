@@ -1,7 +1,7 @@
-Current configuration : 2784 bytes
+Current configuration : 2870 bytes
 !
-! Last configuration change at 20:03:12 MST Mon Aug 26 2024 by lab
-! NVRAM config last updated at 20:03:13 MST Mon Aug 26 2024 by lab
+! Last configuration change at 19:36:14 MST Tue Sep 3 2024 by lab
+! NVRAM config last updated at 19:36:15 MST Tue Sep 3 2024 by lab
 !
 version 15.7
 service timestamps debug datetime msec localtime show-timezone year
@@ -107,8 +107,10 @@ interface Ethernet0/2
  duplex auto
 !
 interface Ethernet0/3
- no ip address
- shutdown
+ description site03-pub-s1 e0/0
+ ip address 100.64.1.17 255.255.255.248
+ ip nat inside
+ ip virtual-reassembly in
  duplex auto
 !
 interface Ethernet1/0

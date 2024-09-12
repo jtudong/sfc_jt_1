@@ -1,6 +1,7 @@
-Current configuration : 2396 bytes
+Current configuration : 2879 bytes
 !
-! Last configuration change at 20:40:29 MST Sun Sep 1 2024
+! Last configuration change at 19:40:20 MST Wed Sep 11 2024
+! NVRAM config last updated at 19:40:26 MST Wed Sep 11 2024
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone year
@@ -89,17 +90,34 @@ interface Ethernet0/2
  spanning-tree portfast edge
 !
 interface Ethernet0/3
+ description ubuntu01
  switchport access vlan 20
  switchport mode access
  spanning-tree portfast edge
 !
 interface Ethernet1/0
+ description server
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
 !
 interface Ethernet1/1
+ description server
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
 !
 interface Ethernet1/2
+ description server
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
 !
 interface Ethernet1/3
+ description server
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
 !
 interface Ethernet2/0
 !

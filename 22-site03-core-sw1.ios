@@ -1,7 +1,7 @@
-Current configuration : 3144 bytes
+Current configuration : 3164 bytes
 !
-! Last configuration change at 22:07:07 MST Tue Sep 3 2024 by lab
-! NVRAM config last updated at 22:07:13 MST Tue Sep 3 2024 by lab
+! Last configuration change at 19:36:44 MST Fri Sep 13 2024 by lab
+! NVRAM config last updated at 20:14:39 MST Fri Sep 13 2024 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone year
@@ -58,7 +58,7 @@ vlan 92
 vlan 255
  name uplink
 !
-! 
+!
 !
 !
 !
@@ -83,6 +83,7 @@ interface Ethernet0/1
  spanning-tree portfast edge
 !
 interface Ethernet0/2
+ description br03
  switchport access vlan 92
  switchport mode access
  spanning-tree portfast edge
@@ -138,7 +139,7 @@ interface Vlan255
  ip ospf 1 area 0.0.0.0
 !
 router ospf 1
- router-id 10.2.255.2
+ router-id 10.3.255.2
  passive-interface default
  no passive-interface Vlan255
 !
@@ -163,7 +164,7 @@ control-plane
 !
 !
 line con 0
- session-timeout 30 
+ session-timeout 30
  exec-timeout 0 0
  privilege level 15
  logging synchronous

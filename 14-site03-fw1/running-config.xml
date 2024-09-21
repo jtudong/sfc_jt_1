@@ -270,6 +270,20 @@
                   <hours>1</hours>
                 </lifetime>
               </entry>
+              <entry name="ipsec_preferred">
+                <esp>
+                  <authentication>
+                    <member>sha256</member>
+                  </authentication>
+                  <encryption>
+                    <member>aes-256-cbc</member>
+                  </encryption>
+                </esp>
+                <lifetime>
+                  <hours>1</hours>
+                </lifetime>
+                <dh-group>group14</dh-group>
+              </entry>
             </ipsec-crypto-profiles>
             <global-protect-app-crypto-profiles>
               <entry name="default">
@@ -486,6 +500,7 @@
                 <ike-gateway>
                   <entry name="site01"/>
                 </ike-gateway>
+                <ipsec-crypto-profile>ipsec_preferred</ipsec-crypto-profile>
               </auto-key>
               <tunnel-monitor>
                 <enable>yes</enable>

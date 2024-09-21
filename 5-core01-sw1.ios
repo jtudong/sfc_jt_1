@@ -1,9 +1,7 @@
-
-Building configuration...
-
-Current configuration : 3995 bytes
+Current configuration : 4127 bytes
 !
-! Last configuration change at 20:15:45 MST Sun Sep 1 2024
+! Last configuration change at 20:20:55 MST Fri Sep 20 2024 by lab
+! NVRAM config last updated at 20:22:33 MST Fri Sep 20 2024 by lab
 !
 version 15.2
 service timestamps debug datetime msec localtime show-timezone year
@@ -63,7 +61,7 @@ vlan 92
 vlan 255
  name uplink
 !
-! 
+!
 !
 !
 !
@@ -132,7 +130,19 @@ interface Ethernet2/0
 !
 interface Ethernet2/1
  description server
- switchport access vn 20
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
+!
+interface Ethernet2/2
+ description server
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
+!
+interface Ethernet2/3
+ description server
+ switchport access vlan 20
  switchport mode access
  spanning-tree portfast edge
 !
@@ -174,6 +184,8 @@ interface Vlan255
 !
 router ospf 1
  router-id 10.1.255.2
+ passive-interface default
+ no passive-interface Vlan255
 !
 ip forward-protocol nd
 !
@@ -198,7 +210,7 @@ control-plane
 !
 !
 line con 0
- session-timeout 30 
+ session-timeout 30
  exec-timeout 0 0
  privilege level 15
  logging synchronous
@@ -218,5 +230,3 @@ ntp server 216.239.35.0 prefer
 !
 !
 end
-
-core01-sw1#

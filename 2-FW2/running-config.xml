@@ -190,6 +190,13 @@ network {
           }
           interface-management-profile "mgmt profile";
         }
+        tunnel.3 {
+          comment site03;
+          ip {
+            192.168.0.5/30;
+          }
+          interface-management-profile "mgmt profile";
+        }
       }
     }
   }
@@ -242,6 +249,15 @@ network {
             hours 8;
           }
         }
+        ike-preferred {
+          hash sha256;
+          dh-group group14;
+          encryption aes-256-cbc;
+          lifetime {
+            hours 8;
+          }
+          authentication-multiple 3;
+        }
       }
       ipsec-crypto-profiles {
         default {
@@ -273,6 +289,16 @@ network {
           lifetime {
             hours 1;
           }
+        }
+        ipsec_preferred {
+          esp {
+            authentication sha256;
+            encryption aes-256-cbc;
+          }
+          lifetime {
+            hours 1;
+          }
+          dh-group group14;
         }
       }
       global-protect-app-crypto-profiles {
@@ -316,6 +342,42 @@ network {
         }
         peer-address {
           ip 100.64.1.10;
+        }
+      }
+      site03 {
+        authentication {
+          pre-shared-key {
+            key -AQ==fEqNCco3Yq9h5ZUglD3CZJT4lBs=TPKw8W+5h+VtffslpLSTkQ==;
+          }
+        }
+        protocol {
+          ikev1 {
+            dpd {
+              enable yes;
+            }
+          }
+          ikev2 {
+            dpd {
+              enable yes;
+            }
+            ike-crypto-profile ike-preferred;
+          }
+          version ikev2;
+        }
+        local-address {
+          ip 100.64.1.2/29;
+          interface ethernet1/1;
+        }
+        protocol-common {
+          nat-traversal {
+            enable no;
+          }
+          fragmentation {
+            enable no;
+          }
+        }
+        peer-address {
+          ip 100.64.1.18;
         }
       }
     }
@@ -422,6 +484,23 @@ network {
                     p2p;
                   }
                 }
+                tunnel.3 {
+                  bfd {
+                    profile Inherit-vr-global-setting;
+                  }
+                  enable yes;
+                  passive no;
+                  gr-delay 10;
+                  metric 10;
+                  priority 1;
+                  hello-interval 10;
+                  dead-counts 4;
+                  retransmit-interval 5;
+                  transit-delay 1;
+                  link-type {
+                    p2p;
+                  }
+                }
               }
             }
           }
@@ -432,7 +511,7 @@ network {
           enable no;
         }
       }
-      interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1];
+      interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1 tunnel.3];
       routing-table {
         ip {
           static-route {
@@ -450,21 +529,6 @@ network {
                 unicast;
               }
             }
-            "site1 subernet" {
-              nexthop {
-                ip-address 10.1.255.2;
-              }
-              bfd {
-                profile None;
-              }
-              interface ethernet1/2;
-              metric 100;
-              admin-dist 240;
-              destination 10.1.0.0/16;
-              route-table {
-                unicast;
-              }
-            }
           }
         }
       }
@@ -477,7 +541,7 @@ network {
   }
   tunnel {
     ipsec {
-      sit01-to-site02 {
+      site01-to-site02 {
         auto-key {
           ike-gateway {
             site02;
@@ -488,6 +552,19 @@ network {
           destination-ip 192.168.0.2;
         }
         tunnel-interface tunnel.1;
+      }
+      site01-to-site03 {
+        auto-key {
+          ike-gateway {
+            site03;
+          }
+          ipsec-crypto-profile ipsec_preferred;
+        }
+        tunnel-monitor {
+          enable yes;
+          destination-ip 192.168.0.6;
+        }
+        tunnel-interface tunnel.3;
       }
     }
     global-protect-gateway;
@@ -569,7 +646,7 @@ zone {
   }
   VPN {
     network {
-      layer3 tunnel.1;
+      layer3 [ tunnel.1 tunnel.3];
     }
     enable-user-identification yes;
   }
@@ -615,7 +692,7 @@ rulebase {
 }
 import {
   network {
-    interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1];
+    interface [ ethernet1/1 ethernet1/2 ethernet1/7 tunnel.1 tunnel.3];
   }
 }
 application-group;
@@ -630,10 +707,17 @@ mgt-config {
         }
       }
     }
+    __openconfig {
+      phash $5$oraronei$GkaWMNfFvV3FSTA/Yb1XyvWFptU7K0lKISPlMAU1Vu8;
+      permissions {
+        role-based {
+          deviceadmin localhost.localdomain;
+        }
+      }
+    }
   }
   password-complexity {
     enabled yes;
     minimum-length 8;
   }
 }
-[edit]                                                                          
